@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "DiabloLikeARPGCharacter.h"
+
+#include "InteractableInterface.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
@@ -45,7 +47,48 @@ ADiabloLikeARPGCharacter::ADiabloLikeARPGCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
+void ADiabloLikeARPGCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	const FTimerDelegate CheckForInteractionsTimerDelegate =
+		FTimerDelegate::CreateUObject(this, &ADiabloLikeARPGCharacter::CheckForInteractions);
+
+	GetWorldTimerManager().SetTimer(InteractionTimerHandle, CheckForInteractionsTimerDelegate, .2f, true);
+}
+
 void ADiabloLikeARPGCharacter::Tick(float DeltaSeconds)
 {
-    Super::Tick(DeltaSeconds);
+	Super::Tick(DeltaSeconds);
+}
+
+void ADiabloLikeARPGCharacter::CheckForInteractions()
+{
+	if (CurrentInteractable == nullptr) return;
+
+	const float DistanceToTarget = GetDistanceTo(CurrentInteractable->GetInteractableActor());
+
+	// if (GEngine)
+	// 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green,
+	// 	FString::Printf(TEXT("Distance: %f"), DistanceToTarget));
+	
+	if (DistanceToTarget <= GetInteractionRange())
+	{
+		CurrentInteractable->Interact(this);
+		GetCharacterMovement()->StopMovementImmediately();
+		CurrentInteractable = nullptr;
+	}
+}
+
+void ADiabloLikeARPGCharacter::SetInteractableTarget(IInteractableInterface* Interactable)
+{
+	if (Interactable != nullptr)
+	{
+		CurrentInteractable = Interactable;
+	}
+}
+
+float ADiabloLikeARPGCharacter::GetInteractionRange()
+{
+	return 200.f;
 }
