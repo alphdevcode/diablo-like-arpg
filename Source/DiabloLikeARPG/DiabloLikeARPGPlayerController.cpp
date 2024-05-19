@@ -9,6 +9,8 @@
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 ADiabloLikeARPGPlayerController::ADiabloLikeARPGPlayerController()
 {
@@ -24,9 +26,17 @@ void ADiabloLikeARPGPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	//Add Input Mapping Context
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+		GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	}
+
+	// Cache ControlledCharacter
+	ControlledCharacter = Cast<ADiabloLikeARPGCharacter>(GetCharacter());
+	if (ControlledCharacter == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("ADiabloLikeARPGPlayerController::BeginPlay: ControlledCharacter is nullptr"));
 	}
 }
 
@@ -39,16 +49,56 @@ void ADiabloLikeARPGPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
 	{
 		// Setup mouse input events
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &ADiabloLikeARPGPlayerController::OnInputStarted);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &ADiabloLikeARPGPlayerController::OnSetDestinationTriggered);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &ADiabloLikeARPGPlayerController::OnSetDestinationReleased);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &ADiabloLikeARPGPlayerController::OnSetDestinationReleased);
+		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this,
+		                                   &ADiabloLikeARPGPlayerController::OnInputStarted);
+		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this,
+		                                   &ADiabloLikeARPGPlayerController::OnSetDestinationTriggered);
+		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this,
+		                                   &ADiabloLikeARPGPlayerController::OnSetDestinationReleased);
+		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this,
+		                                   &ADiabloLikeARPGPlayerController::OnSetDestinationReleased);
 
 		// Setup touch input events
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &ADiabloLikeARPGPlayerController::OnInputStarted);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &ADiabloLikeARPGPlayerController::OnTouchTriggered);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &ADiabloLikeARPGPlayerController::OnTouchReleased);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &ADiabloLikeARPGPlayerController::OnTouchReleased);
+		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this,
+		                                   &ADiabloLikeARPGPlayerController::OnInputStarted);
+		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this,
+		                                   &ADiabloLikeARPGPlayerController::OnTouchTriggered);
+		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this,
+		                                   &ADiabloLikeARPGPlayerController::OnTouchReleased);
+		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this,
+		                                   &ADiabloLikeARPGPlayerController::OnTouchReleased);
+
+		EnhancedInputComponent->BindAction(SetRootedAction, ETriggerEvent::Started, this,
+		                                   &ADiabloLikeARPGPlayerController::OnRootedStarted);
+		EnhancedInputComponent->BindAction(SetRootedAction, ETriggerEvent::Triggered, this,
+		                                   &ADiabloLikeARPGPlayerController::OnRootedTriggered);
+		EnhancedInputComponent->BindAction(SetRootedAction, ETriggerEvent::Completed, this,
+		                                   &ADiabloLikeARPGPlayerController::OnRootedReleased);
+		EnhancedInputComponent->BindAction(SetRootedAction, ETriggerEvent::Canceled, this,
+		                                   &ADiabloLikeARPGPlayerController::OnRootedReleased);
+	}
+}
+
+void ADiabloLikeARPGPlayerController::OnRootedStarted()
+{
+	if (ControlledCharacter != nullptr)
+	{
+		ControlledCharacter->GetCharacterMovement()
+		                   ->SetMovementMode(EMovementMode::MOVE_None);
+	}
+}
+
+void ADiabloLikeARPGPlayerController::OnRootedTriggered()
+{
+	LookAtDestination();
+}
+
+void ADiabloLikeARPGPlayerController::OnRootedReleased()
+{
+	if (ControlledCharacter != nullptr)
+	{
+		ControlledCharacter->GetCharacterMovement()
+		                   ->SetMovementMode(EMovementMode::MOVE_Walking);
 	}
 }
 
@@ -62,7 +112,7 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 {
 	// We flag that the input is being pressed
 	FollowTime += GetWorld()->GetDeltaSeconds();
-	
+
 	// We look for the location in the world where the player has pressed the input
 	FHitResult Hit;
 	bool bHitSuccessful = false;
@@ -80,7 +130,7 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 	{
 		CachedDestination = Hit.Location;
 	}
-	
+
 	// Move towards mouse pointer or touch
 	APawn* ControlledPawn = GetPawn();
 	if (ControlledPawn != nullptr)
@@ -97,7 +147,8 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationReleased()
 	{
 		// We move there and spawn some particles
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator,
+		                                               FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
 	}
 
 	FollowTime = 0.f;
@@ -114,4 +165,29 @@ void ADiabloLikeARPGPlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
 	OnSetDestinationReleased();
+}
+
+void ADiabloLikeARPGPlayerController::LookAtDestination()
+{
+	if (ControlledCharacter == nullptr)
+	{
+		UE_LOG(LogTemp, Error,
+		       TEXT("ADiabloLikeARPGPlayerController::LookAtDestination: ControlledCharacter is nullptr"));
+		return;
+	}
+
+	const FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(
+		ControlledCharacter->GetActorLocation(), CachedDestination);
+
+	// if(GEngine)
+	// 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
+	// 		LookAtRotator.ToString());	
+
+	const FRotator InterpRotator = UKismetMathLibrary::RInterpTo(
+		ControlledCharacter->GetActorRotation(),
+		FRotator(0.f, LookAtRotator.Yaw, 0.f),
+		GetWorld()->GetDeltaSeconds(),
+		10.f);
+
+	ControlledCharacter->SetActorRotation(InterpRotator);
 }

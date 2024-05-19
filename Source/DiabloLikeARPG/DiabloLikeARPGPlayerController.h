@@ -39,12 +39,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* SetDestinationTouchAction;
 
+	/** Jump Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	class UInputAction* SetRootedAction;
+
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
 
-	virtual void SetupInputComponent() override;
+	class ADiabloLikeARPGCharacter* ControlledCharacter;
 	
+	virtual void SetupInputComponent() override;
+
 	// To add mapping context
 	virtual void BeginPlay();
 
@@ -55,11 +61,19 @@ protected:
 	void OnTouchTriggered();
 	void OnTouchReleased();
 
+	/** Input handlers for SetRooted action. */
+	void OnRootedStarted();
+	void OnRootedTriggered();
+	void OnRootedReleased();
+
 private:
 	FVector CachedDestination;
 
 	bool bIsTouch; // Is it a touch device
 	float FollowTime; // For how long it has been pressed
+
+	// Rotate the pawn to look at the destination
+	void LookAtDestination();
 };
 
 
