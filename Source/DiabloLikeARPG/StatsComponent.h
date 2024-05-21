@@ -81,6 +81,9 @@ public:
 	float GetStatValue(EPlayerStat Stat) const;
 
 	UFUNCTION(BlueprintPure)
+	float GetHealth() const { return Health; }
+	
+	UFUNCTION(BlueprintPure)
 	float GetMana() const { return Mana; }
 
 	UFUNCTION(BlueprintCallable)

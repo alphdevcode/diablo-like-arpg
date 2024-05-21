@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Ability.h"
-#include "AbilitySlash.generated.h"
+#include "AbilityAttack.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DIABLOLIKEARPG_API AAbilitySlash : public AAbility
+class DIABLOLIKEARPG_API AAbilityAttack : public AAbility
 {
 	GENERATED_BODY()
 	

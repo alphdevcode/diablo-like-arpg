@@ -74,8 +74,12 @@ void AAbility::ActivateAbility()
 			= (Target != nullptr ? Target : Caster)->GetActorTransform();
 
 			if (Caster != nullptr)
+			{
 				AAbilityEffect* AbilityEffect = GetWorld()->
 					SpawnActor<AAbilityEffect>(Effect, SpawnTransform);
+				AbilityEffect->SetOwner(GetOwner());
+			}
+			
 		}
 	}
 

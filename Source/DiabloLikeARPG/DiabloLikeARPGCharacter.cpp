@@ -13,6 +13,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include "AbilityAttack.h"
 
 ADiabloLikeARPGCharacter::ADiabloLikeARPGCharacter()
 {
@@ -66,6 +67,51 @@ void ADiabloLikeARPGCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 }
 
+float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	float DamageToApply = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	// DamageToApply = FMath::Min(Health, DamageToApply);
+
+	StatsComponent->ReduceHealth(DamageToApply);
+
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
+			FString::Printf(TEXT("Taking Damage. Health: %f"), StatsComponent->GetHealth()));
+
+	if(IsDead())
+	{
+		// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		// DetachFromControllerPendingDestroy();
+
+		// UnPossessed();
+		// GetMesh()->SetSimulatePhysics(true);
+
+		const FName PelvisBone = "pelvis";
+		GetMesh()->SetAllBodiesBelowSimulatePhysics(
+			PelvisBone,
+			true,
+			true);
+		GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(
+			PelvisBone,
+			1.f,
+			false,
+			true);
+
+		if(GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
+				TEXT("Dead"));
+	}
+
+	return DamageToApply;
+}
+
+bool ADiabloLikeARPGCharacter::IsDead() const
+{
+	return StatsComponent->GetHealth() <= 0;
+}
+
 void ADiabloLikeARPGCharacter::CheckForInteractions()
 {
 	if (CurrentInteractable == nullptr) return;
@@ -95,4 +141,13 @@ void ADiabloLikeARPGCharacter::SetInteractableTarget(IInteractableInterface* Int
 float ADiabloLikeARPGCharacter::GetInteractionRange()
 {
 	return 200.f;
+}
+
+void ADiabloLikeARPGCharacter::ActivateAttackAbility() const
+{
+	AAbilityAttack* AbilityAttack;
+	if(Abilities.FindItemByClass<AAbilityAttack>(&AbilityAttack))
+	{
+		AbilityAttack->ActivateAbility();
+	}
 }
