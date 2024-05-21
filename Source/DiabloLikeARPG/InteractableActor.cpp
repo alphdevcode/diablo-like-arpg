@@ -43,7 +43,7 @@ void AInteractableActor::NotifyActorOnClicked(FKey ButtonPressed)
 }
 
 
-void AInteractableActor::Interact(ACharacter* Character)
+void AInteractableActor::Interact(ACharacter* InteractorCharacter)
 {
 	if(GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green,

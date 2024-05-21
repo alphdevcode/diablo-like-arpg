@@ -30,7 +30,7 @@ void AAbility::Tick(float DeltaTime)
 
 bool AAbility::CanActivateAbility() const
 {
-	UStatsComponent* StatsComponent = GetOwner()->GetComponentByClass<UStatsComponent>();
+	const UStatsComponent* StatsComponent = GetOwner()->GetComponentByClass<UStatsComponent>();
 	if (StatsComponent != nullptr)
 	{
 		return StatsComponent->GetMana() >= ManaCost;
@@ -59,6 +59,13 @@ void AAbility::ActivateAbility()
 	// }
 	// bIsActive = true;
 	OnAbilityActivated.Broadcast();
+
+	UStatsComponent* StatsComponent = GetOwner()->GetComponentByClass<UStatsComponent>();
+	if (StatsComponent != nullptr)
+	{
+		StatsComponent->ConsumeMana(ManaCost);
+	}
+	
 	for (TSubclassOf<AAbilityEffect> Effect : Effects)
 	{
 		if (Effect.GetDefaultObject() != nullptr)

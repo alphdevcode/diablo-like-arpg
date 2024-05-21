@@ -23,10 +23,10 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
 	virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
 
-// IInteractableInterface
-public:
-	virtual void Interact(ACharacter* Character) override;
+	// IInteractableInterface
+	virtual void Interact(ACharacter* InteractorCharacter) override;
 	virtual const AActor* GetInteractableActor() const override;
 };

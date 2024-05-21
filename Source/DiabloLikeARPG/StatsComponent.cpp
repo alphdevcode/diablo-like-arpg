@@ -22,10 +22,9 @@ void UStatsComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const 
 	// {
 	// 	Damage -= Stats[EPlayerStat::Armor];
 	// }
-	
+
 	Health -= Damage;
 	UE_LOG(LogTemp, Warning, TEXT("Taking Damage... %s"), *GetOwner()->GetName());
-	
 }
 
 
@@ -35,7 +34,17 @@ void UStatsComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Health = Stats[EPlayerStat::MaxHealth];
+
+	if (OnHealthChanged.IsBound())
+	{
+		OnHealthChanged.Broadcast(GetHealthPercent(), Health);
+	}
+	
 	Mana = Stats[EPlayerStat::MaxMana];
+	if(OnManaChanged.IsBound())
+	{
+		OnManaChanged.Broadcast(GetManaPercent(), Mana);
+	}
 
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UStatsComponent::OnTakeAnyDamage);
 }
@@ -68,6 +77,11 @@ float UStatsComponent::GetHealthPercent() const
 	return Health / Stats[EPlayerStat::MaxHealth];
 }
 
+float UStatsComponent::GetManaPercent() const
+{
+	return Mana / Stats[EPlayerStat::MaxMana];
+}
+
 float UStatsComponent::GetStatValue(const EPlayerStat Stat) const
 {
 	if (Stats.Contains(Stat))
@@ -89,5 +103,39 @@ void UStatsComponent::LevelUp()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't level up. Max level reached"));
+	}
+}
+
+void UStatsComponent::ConsumeMana(float Amount)
+{
+	if (Mana >= Amount)
+	{
+		Mana -= Amount;
+		if (OnManaChanged.IsBound())
+		{
+			OnManaChanged.Broadcast(GetManaPercent(), Mana);
+		}
+	}
+	else
+	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow,
+			                                 TEXT("Not enough mana to consume."));
+	}
+}
+
+void UStatsComponent::ReduceHealth(float Amount)
+{
+	Health -= Amount;
+	if(Health <= 0.f)
+	{
+		Health = 0.f;
+		if(GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 2.f,
+				FColor::Red, TEXT("You are dead."));
+	}
+	if (OnHealthChanged.IsBound())
+	{
+		OnHealthChanged.Broadcast(GetHealthPercent(), Health);
 	}
 }

@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "StatsComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChanged, float, HealthPercent, float, HealthValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnManaChanged, float, ManaPercent, float, ManaValue);
 
 UENUM(BlueprintType)
 enum class EPlayerStat : uint8
@@ -73,6 +75,9 @@ public:
 	float GetHealthPercent() const;
 
 	UFUNCTION(BlueprintPure)
+	float GetManaPercent() const;
+
+	UFUNCTION(BlueprintPure)
 	float GetStatValue(EPlayerStat Stat) const;
 
 	UFUNCTION(BlueprintPure)
@@ -80,4 +85,16 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void LevelUp();
+
+	UFUNCTION(BlueprintCallable)
+	void ConsumeMana(float Amount);
+
+	UFUNCTION(BlueprintCallable)
+	void ReduceHealth(float Amount);
+
+	UPROPERTY(BlueprintAssignable)
+	FOnHealthChanged OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnManaChanged OnManaChanged;
 };

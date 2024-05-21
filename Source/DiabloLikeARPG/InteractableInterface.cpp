@@ -5,7 +5,7 @@
 
 // Add default functionality here for any IInteractableInterface functions that are not pure virtual.
 
-void IInteractableInterface::Interact(ACharacter* Character)
+void IInteractableInterface::Interact(ACharacter* InteractorCharacter)
 {
 }
 
