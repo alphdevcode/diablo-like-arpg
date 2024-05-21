@@ -32,12 +32,10 @@ void AInteractableActor::Tick(float DeltaTime)
 void AInteractableActor::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	Super::NotifyActorOnClicked(ButtonPressed);
-	
-	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(this, 0);
-	if(PlayerCharacter)
+
+	if(ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(this, 0))
 	{
-		IInteractorInterface* Interactor = Cast<IInteractorInterface>(PlayerCharacter);
-		if(Interactor)
+		if(IInteractorInterface* Interactor = Cast<IInteractorInterface>(PlayerCharacter))
 		{
 			Interactor->SetInteractableTarget(Cast<IInteractableInterface>(this));
 		}
