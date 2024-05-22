@@ -26,15 +26,26 @@ void AAbility::BeginPlay()
 void AAbility::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if(RemainingCooldown > 0)
+	{
+		RemainingCooldown -= DeltaTime;
+	}
 }
 
 bool AAbility::CanActivateAbility() const
 {
+	if(RemainingCooldown > 0)
+	{
+		return false;
+	}
+
 	const UStatsComponent* StatsComponent = GetOwner()->GetComponentByClass<UStatsComponent>();
 	if (StatsComponent != nullptr)
 	{
 		return StatsComponent->GetMana() >= ManaCost;
 	}
+	
 	if(GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
 			TEXT("Can not find StatsComponent when trying to activate ability."));
@@ -47,7 +58,7 @@ void AAbility::ActivateAbility()
 	{
 		if(GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
-				TEXT("Can not activate ability, not enough mana."));
+				TEXT("Can not activate ability"));
 		return;
 	}
 	// if (!bIsActive)
@@ -58,6 +69,7 @@ void AAbility::ActivateAbility()
 	// 	return;
 	// }
 	// bIsActive = true;
+	RemainingCooldown = Cooldown;
 	OnAbilityActivated.Broadcast();
 
 	UStatsComponent* StatsComponent = GetOwner()->GetComponentByClass<UStatsComponent>();

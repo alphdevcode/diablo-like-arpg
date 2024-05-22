@@ -2,6 +2,7 @@
 
 #include "DiabloLikeARPGCharacter.h"
 
+#include "AbilitiesComponent.h"
 #include "StatsComponent.h"
 #include "InteractableInterface.h"
 #include "UObject/ConstructorHelpers.h"
@@ -38,7 +39,7 @@ ADiabloLikeARPGCharacter::ADiabloLikeARPGCharacter()
 	CameraBoom->TargetArmLength = 800.f;
 	CameraBoom->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
 	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
-	
+
 	// Create a camera...
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
@@ -46,7 +47,10 @@ ADiabloLikeARPGCharacter::ADiabloLikeARPGCharacter()
 
 	// Attach Stat Component
 	StatsComponent = CreateDefaultSubobject<UStatsComponent>(TEXT("StatsComponent"));
-	
+
+	// Attach Abilities Component
+	AbilitiesComponent = CreateDefaultSubobject<UAbilitiesComponent>(TEXT("AbilitiesComponent"));
+
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -68,25 +72,25 @@ void ADiabloLikeARPGCharacter::Tick(float DeltaSeconds)
 }
 
 float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	AActor* DamageCauser)
+                                           AActor* DamageCauser)
 {
-	float DamageToApply = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	const float DamageToApply = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
 	// DamageToApply = FMath::Min(Health, DamageToApply);
 
 	StatsComponent->ReduceHealth(DamageToApply);
 
-	if(GEngine)
+	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
-			FString::Printf(TEXT("Taking Damage. Health: %f"), StatsComponent->GetHealth()));
+		                                 FString::Printf(
+			                                 TEXT("Taking Damage. Health: %f"), StatsComponent->GetHealth()));
 
-	if(IsDead())
+	if (IsDead())
 	{
 		// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		// DetachFromControllerPendingDestroy();
+		DetachFromControllerPendingDestroy();
 
 		// UnPossessed();
-		// GetMesh()->SetSimulatePhysics(true);
 
 		const FName PelvisBone = "pelvis";
 		GetMesh()->SetAllBodiesBelowSimulatePhysics(
@@ -99,9 +103,9 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 			false,
 			true);
 
-		if(GEngine)
+		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
-				TEXT("Dead"));
+			                                 TEXT("Dead"));
 	}
 
 	return DamageToApply;
@@ -121,7 +125,7 @@ void ADiabloLikeARPGCharacter::CheckForInteractions()
 	// if (GEngine)
 	// 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green,
 	// 	FString::Printf(TEXT("Distance: %f"), DistanceToTarget));
-	
+
 	if (DistanceToTarget <= GetInteractionRange())
 	{
 		CurrentInteractable->Interact(this);
@@ -145,9 +149,5 @@ float ADiabloLikeARPGCharacter::GetInteractionRange()
 
 void ADiabloLikeARPGCharacter::ActivateAttackAbility() const
 {
-	AAbilityAttack* AbilityAttack;
-	if(Abilities.FindItemByClass<AAbilityAttack>(&AbilityAttack))
-	{
-		AbilityAttack->ActivateAbility();
-	}
+	AbilitiesComponent->ActivateAttackAbility();
 }

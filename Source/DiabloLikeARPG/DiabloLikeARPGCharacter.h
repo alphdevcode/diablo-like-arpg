@@ -36,7 +36,11 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
+	UPROPERTY(VisibleAnywhere)
 	class UStatsComponent* StatsComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	class UAbilitiesComponent* AbilitiesComponent;
 
 private:
 	/** Top down camera */
@@ -53,9 +57,6 @@ protected:
 	IInteractableInterface* CurrentInteractable;
 
 	void CheckForInteractions();
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
-	TArray<AAbility*> Abilities;
 
 public:
 	virtual void SetInteractableTarget(IInteractableInterface* Interactable) override;

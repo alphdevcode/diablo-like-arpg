@@ -28,7 +28,9 @@ protected:
 	bool bIsActive = false;
 
 	UPROPERTY(EditAnywhere, Category = "Ability")
-	float Cooldown = 0.f;
+	float Cooldown = 0.5f;
+	
+	float RemainingCooldown;
 
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	TArray<TSubclassOf<class AAbilityEffect>> Effects;
@@ -63,6 +65,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	bool CanActivateAbility() const;
+
+	// UFUNCTION(BlueprintPure)
+	// bool IsActive() const;
 
 	UFUNCTION(BlueprintCallable)
 	void ActivateAbility();
