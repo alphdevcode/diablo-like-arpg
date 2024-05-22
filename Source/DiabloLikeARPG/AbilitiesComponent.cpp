@@ -21,14 +21,14 @@ void UAbilitiesComponent::BeginPlay()
 	Super::BeginPlay();
 
 	for (const TSubclassOf<AAbility>& AbilityClass : AssignedAbilityClasses)
-{
-	AddAbility(AbilityClass, AssignedAbilities);
-}
+	{
+		AddAbility(AbilityClass, AssignedAbilities);
+	}
 
-for (const TSubclassOf<AAbility>& AbilityClass : ClickAssignedAbilitiesClasses)
-{
-	AddAbility(AbilityClass, ClickAssignedAbilities);
-}
+	for (const TSubclassOf<AAbility>& AbilityClass : ClickAssignedAbilitiesClasses)
+	{
+		AddAbility(AbilityClass, ClickAssignedAbilities);
+	}
 }
 
 
@@ -57,11 +57,15 @@ void UAbilitiesComponent::AddAbility(const TSubclassOf<AAbility>& AbilityClass, 
 	}
 }
 
-void UAbilitiesComponent::ActivateAttackAbility() const
+void UAbilitiesComponent::ActivatePrimaryAttackAbility() const
 {
-	AAbilityAttack* AbilityAttack;
-	if (AssignedAbilities.FindItemByClass<AAbilityAttack>(&AbilityAttack))
+	if (ClickAssignedAbilities[0] == nullptr)
 	{
-		AbilityAttack->ActivateAbility();
+		if(GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow,
+											 "No ability assigned to Primary Ability spot");
+		return;
 	}
+	
+	ClickAssignedAbilities[0]->ActivateAbility(); 
 }

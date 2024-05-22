@@ -62,5 +62,5 @@ public:
 	virtual void SetInteractableTarget(IInteractableInterface* Interactable) override;
 	virtual float GetInteractionRange() override;
 
-	void ActivateAttackAbility() const;
+	void ActivatePrimaryAttackAbility() const;
 };

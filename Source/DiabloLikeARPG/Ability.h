@@ -24,6 +24,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	float ManaCost;
 
+	UPROPERTY(EditAnywhere, Category = "Ability")
+	float Range = 100.f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
 	bool bIsActive = false;
 

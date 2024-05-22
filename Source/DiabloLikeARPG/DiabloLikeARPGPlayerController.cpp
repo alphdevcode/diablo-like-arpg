@@ -107,6 +107,12 @@ void ADiabloLikeARPGPlayerController::OnInputStarted()
 	StopMovement();
 }
 
+void ADiabloLikeARPGPlayerController::MoveTo(const FVector& Destination) const
+{
+	FVector WorldDirection = (Destination - ControlledCharacter->GetActorLocation()).GetSafeNormal();
+	ControlledCharacter->AddMovementInput(WorldDirection, 1.0, false);
+}
+
 // Triggered every frame when the input is held down
 void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 {
@@ -115,14 +121,21 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 
 	// We look for the location in the world where the player has pressed the input
 	FHitResult Hit;
+	bool bDamageableActor = true;
 	bool bHitSuccessful = false;
-	if (bIsTouch)
+	bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, true, Hit);
+
+	// if(GEngine && bHitSuccessful)
+	//  		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange,
+	// 		"Hit Damageable");
+	
+	if (!bHitSuccessful)
 	{
-		bHitSuccessful = GetHitResultUnderFinger(ETouchIndex::Touch1, ECollisionChannel::ECC_Visibility, true, Hit);
-	}
-	else
-	{
+		bDamageableActor = false;
 		bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+		// if(GEngine && bHitSuccessful)
+		// 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange,
+		//    "Hit Visibility");
 	}
 
 	// If we hit a surface, cache the location
@@ -131,12 +144,21 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 		CachedDestination = Hit.Location;
 	}
 
-	// Move towards mouse pointer or touch
-	APawn* ControlledPawn = GetPawn();
-	if (ControlledPawn != nullptr)
+	if (bDamageableActor)
 	{
-		FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
-		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
+		if (FVector::Dist(CachedDestination, ControlledCharacter->GetActorLocation())
+			<= ControlledCharacter->GetInteractionRange())
+		{
+			ControlledCharacter->ActivatePrimaryAttackAbility();
+		}
+		else
+		{
+			MoveTo(CachedDestination);
+		}
+	}
+	else
+	{
+		MoveTo(CachedDestination);
 	}
 }
 

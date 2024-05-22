@@ -78,6 +78,8 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 
 	// DamageToApply = FMath::Min(Health, DamageToApply);
 
+	// TODO: Play Hit Anim Montage
+
 	StatsComponent->ReduceHealth(DamageToApply);
 
 	if (GEngine)
@@ -147,7 +149,8 @@ float ADiabloLikeARPGCharacter::GetInteractionRange()
 	return 200.f;
 }
 
-void ADiabloLikeARPGCharacter::ActivateAttackAbility() const
+void ADiabloLikeARPGCharacter::ActivatePrimaryAttackAbility() const
 {
-	AbilitiesComponent->ActivateAttackAbility();
+	// TODO: refactor to use the ability set in the AbilitiesComponent array at index 0
+	AbilitiesComponent->ActivatePrimaryAttackAbility();
 }

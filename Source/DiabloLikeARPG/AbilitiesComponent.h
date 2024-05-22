@@ -41,5 +41,5 @@ public:
 	void AddAbility(const TSubclassOf<AAbility>& AbilityClass,
 		TArray<AAbility*>& AbilitiesArray) const;
 	
-	void ActivateAttackAbility() const;
+	void ActivatePrimaryAttackAbility() const;
 };

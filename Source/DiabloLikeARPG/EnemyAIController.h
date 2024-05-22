@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class DIABLOLIKEARPG_API AEnemyAIController : public AAIController,  public IInteractableInterface
+class DIABLOLIKEARPG_API AEnemyAIController : public AAIController
 {
 	GENERATED_BODY()
 protected:
@@ -26,12 +26,5 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	class UBehaviorTree* AIBehavior; 
-	
-public:
-	virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
-
-	// IInteractableInterface
-	virtual void Interact(ACharacter* InteractorCharacter) override;
-	virtual const AActor* GetInteractableActor() const override;
 	
 };

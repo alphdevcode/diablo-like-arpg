@@ -47,6 +47,7 @@ protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
 
+	UPROPERTY()
 	class ADiabloLikeARPGCharacter* ControlledCharacter;
 	
 	virtual void SetupInputComponent() override;
@@ -56,6 +57,7 @@ protected:
 
 	/** Input handlers for SetDestination action. */
 	void OnInputStarted();
+	void MoveTo(const FVector& Destination) const;
 	void OnSetDestinationTriggered();
 	void OnSetDestinationReleased();
 	void OnTouchTriggered();
