@@ -3,7 +3,22 @@
 
 #include "EnemyARPGCharacter.h"
 
+#include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
+
+AEnemyARPGCharacter::AEnemyARPGCharacter()
+{
+	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar")); 
+	HealthBar->SetupAttachment(RootComponent);
+	HealthBar->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
+}
+
+void AEnemyARPGCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	HealthBar->SetVisibility(false);
+}
 
 void AEnemyARPGCharacter::NotifyActorOnClicked(FKey ButtonPressed)
 {
@@ -22,12 +37,14 @@ void AEnemyARPGCharacter::NotifyActorBeginCursorOver()
 {
 	Super::NotifyActorBeginCursorOver();
 	GetMesh()->SetOverlayMaterial(OverlayMaterial);
+	HealthBar->SetVisibility(true);
 }
 
 void AEnemyARPGCharacter::NotifyActorEndCursorOver()
 {
 	Super::NotifyActorEndCursorOver();
 	GetMesh()->SetOverlayMaterial(nullptr);
+	HealthBar->SetVisibility(false);
 }
 
 void AEnemyARPGCharacter::Interact(ACharacter* InteractorCharacter)
