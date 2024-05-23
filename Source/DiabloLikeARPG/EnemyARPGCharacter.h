@@ -14,8 +14,15 @@ class DIABLOLIKEARPG_API AEnemyARPGCharacter : public ADiabloLikeARPGCharacter, 
 {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Overlay")
+	UMaterialInterface* OverlayMaterial;
+
 public:
 	virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
+
+	virtual void NotifyActorBeginCursorOver() override;
+	virtual void NotifyActorEndCursorOver() override;
 	
 	// IInteractableInterface
 	virtual void Interact(ACharacter* InteractorCharacter) override;

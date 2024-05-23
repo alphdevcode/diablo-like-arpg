@@ -18,6 +18,18 @@ void AEnemyARPGCharacter::NotifyActorOnClicked(FKey ButtonPressed)
 	}
 }
 
+void AEnemyARPGCharacter::NotifyActorBeginCursorOver()
+{
+	Super::NotifyActorBeginCursorOver();
+	GetMesh()->SetOverlayMaterial(OverlayMaterial);
+}
+
+void AEnemyARPGCharacter::NotifyActorEndCursorOver()
+{
+	Super::NotifyActorEndCursorOver();
+	GetMesh()->SetOverlayMaterial(nullptr);
+}
+
 void AEnemyARPGCharacter::Interact(ACharacter* InteractorCharacter)
 {
 	if(ADiabloLikeARPGCharacter* DiabloLikeARPGCharacter = Cast<ADiabloLikeARPGCharacter>(InteractorCharacter))
