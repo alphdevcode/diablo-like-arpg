@@ -78,8 +78,11 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 
 	// DamageToApply = FMath::Min(Health, DamageToApply);
 
-	// TODO: Play Hit Anim Montage
-
+	if (HitAnimMontage != nullptr)
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(HitAnimMontage, 1.f,
+			EMontagePlayReturnType::MontageLength, 0.f, false);
+	}
 	StatsComponent->ReduceHealth(DamageToApply);
 
 	if (GEngine)

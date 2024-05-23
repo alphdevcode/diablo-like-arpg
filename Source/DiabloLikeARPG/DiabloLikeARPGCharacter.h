@@ -56,6 +56,9 @@ private:
 protected:
 	IInteractableInterface* CurrentInteractable;
 
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* HitAnimMontage;
+
 	void CheckForInteractions();
 
 public:
