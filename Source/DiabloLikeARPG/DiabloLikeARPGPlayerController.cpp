@@ -121,8 +121,9 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 
 	// We look for the location in the world where the player has pressed the input
 	FHitResult Hit;
-	bool bDamageableActor = true;
+	bHitDamageableActor = true;
 	bool bHitSuccessful = false;
+	// Check if it hit any damageable actor
 	bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, true, Hit);
 
 	// if(GEngine && bHitSuccessful)
@@ -131,7 +132,7 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 	
 	if (!bHitSuccessful)
 	{
-		bDamageableActor = false;
+		bHitDamageableActor = false;
 		bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
 		// if(GEngine && bHitSuccessful)
 		// 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange,
@@ -144,7 +145,7 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 		CachedDestination = Hit.Location;
 	}
 
-	if (bDamageableActor)
+	if (bHitDamageableActor)
 	{
 		if (FVector::Dist(CachedDestination, ControlledCharacter->GetActorLocation())
 			<= ControlledCharacter->GetInteractionRange())
@@ -169,8 +170,11 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationReleased()
 	{
 		// We move there and spawn some particles
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator,
-		                                               FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+		if(!bHitDamageableActor)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator,
+														   FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+		}
 	}
 
 	FollowTime = 0.f;
