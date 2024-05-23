@@ -1,10 +1,7 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InteractorInterface.h"
-#include "InteractableInterface.h"
+#include "DiabloLikeARPG/InteractionSystem/InteractorInterface.h"
 #include "GameFramework/Character.h"
 #include "DiabloLikeARPGCharacter.generated.h"
 

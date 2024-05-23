@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DiabloLikeARPGCharacter.h"
+#include "DiabloLikeARPG/InteractionSystem/InteractableInterface.h"
 #include "EnemyARPGCharacter.generated.h"
 
 class UWidgetComponent;

@@ -1,21 +1,15 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "DiabloLikeARPGCharacter.h"
 
-#include "AbilitiesComponent.h"
-#include "StatsComponent.h"
-#include "InteractableInterface.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
-#include "Components/DecalComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "DiabloLikeARPG/StatsComponent.h"
+#include "DiabloLikeARPG/AbilitiesSystem/AbilitiesComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
-#include "AbilityAttack.h"
-#include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
 ADiabloLikeARPGCharacter::ADiabloLikeARPGCharacter()

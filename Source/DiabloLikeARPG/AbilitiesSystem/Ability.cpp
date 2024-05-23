@@ -4,7 +4,7 @@
 #include "Ability.h"
 
 #include "AbilityEffect.h"
-#include "StatsComponent.h"
+#include "../StatsComponent.h"
 #include "GameFramework/Character.h"
 
 // Sets default values

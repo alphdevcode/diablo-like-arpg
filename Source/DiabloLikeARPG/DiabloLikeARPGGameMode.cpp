@@ -2,7 +2,6 @@
 
 #include "DiabloLikeARPGGameMode.h"
 #include "DiabloLikeARPGPlayerController.h"
-#include "DiabloLikeARPGCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 ADiabloLikeARPGGameMode::ADiabloLikeARPGGameMode()

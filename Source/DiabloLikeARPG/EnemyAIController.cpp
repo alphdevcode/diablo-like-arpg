@@ -3,11 +3,6 @@
 
 #include "EnemyAIController.h"
 
-#include "DiabloLikeARPGCharacter.h"
-#include "InteractorInterface.h"
-#include "Kismet/GameplayStatics.h"
-#include "GameFramework/Character.h"
-
 
 void AEnemyAIController::BeginPlay()
 {
