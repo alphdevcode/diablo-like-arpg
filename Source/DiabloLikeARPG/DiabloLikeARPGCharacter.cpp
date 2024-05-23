@@ -15,6 +15,8 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "AbilityAttack.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 ADiabloLikeARPGCharacter::ADiabloLikeARPGCharacter()
 {
@@ -111,6 +113,11 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
 			                                 TEXT("Dead"));
+
+		// destroy the character after 2 seconds
+		FTimerHandle TimerHandle;
+		GetWorldTimerManager().SetTimer(TimerHandle, this,
+			&ADiabloLikeARPGCharacter::DestroyCharacter, 2.f, false);
 	}
 
 	return DamageToApply;
@@ -137,6 +144,27 @@ void ADiabloLikeARPGCharacter::CheckForInteractions()
 		GetCharacterMovement()->StopMovementImmediately();
 		CurrentInteractable = nullptr;
 	}
+}
+
+void ADiabloLikeARPGCharacter::DestroyCharacter()
+{
+	const FVector MeshLocation = GetMesh()->GetBoneLocation("pelvis");
+	if(DestroyFX != nullptr)
+	{
+		// play particle system
+		UGameplayStatics::SpawnEmitterAtLocation(this,
+			DestroyFX,
+			MeshLocation);
+	}
+
+	if(DestroySound != nullptr)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, DestroySound,
+			MeshLocation);
+	}
+
+	
+	Destroy();
 }
 
 void ADiabloLikeARPGCharacter::SetInteractableTarget(IInteractableInterface* Interactable)

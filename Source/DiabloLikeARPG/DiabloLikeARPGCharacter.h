@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "DiabloLikeARPGCharacter.generated.h"
 
+class UNiagaraSystem;
 class AAbility;
 class AAbilityAttack;
 class IInteractableInterface;
@@ -56,10 +57,18 @@ private:
 protected:
 	IInteractableInterface* CurrentInteractable;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UAnimMontage* HitAnimMontage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UParticleSystem* DestroyFX;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class USoundBase* DestroySound;
+
 	void CheckForInteractions();
+
+	void DestroyCharacter();
 
 public:
 	virtual void SetInteractableTarget(IInteractableInterface* Interactable) override;
