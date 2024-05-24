@@ -50,6 +50,7 @@ private:
 	class USpringArmComponent* CameraBoom;
 
 	FTimerHandle InteractionTimerHandle;
+	FTimerHandle DestroyActorTimerHandle;
 
 protected:
 	IInteractableInterface* CurrentInteractable;

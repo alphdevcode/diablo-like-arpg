@@ -108,9 +108,8 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
 			                                 TEXT("Dead"));
 
-		// destroy the character after 2 seconds
-		FTimerHandle TimerHandle;
-		GetWorldTimerManager().SetTimer(TimerHandle, this,
+		// Destroy the character after 2 seconds
+		GetWorldTimerManager().SetTimer(DestroyActorTimerHandle, this,
 			&ADiabloLikeARPGCharacter::DestroyCharacter, 2.f, false);
 	}
 
@@ -159,6 +158,7 @@ void ADiabloLikeARPGCharacter::DestroyCharacter()
 
 	
 	Destroy();
+	DestroyActorTimerHandle.Invalidate();
 }
 
 void ADiabloLikeARPGCharacter::SetInteractableTarget(IInteractableInterface* Interactable)
