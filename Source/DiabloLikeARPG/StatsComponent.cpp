@@ -28,25 +28,40 @@ void UStatsComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const 
 }
 
 
-// Called when the game starts
 void UStatsComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
 	Health = Stats[EPlayerStat::MaxHealth];
-
 	if (OnHealthChanged.IsBound())
 	{
 		OnHealthChanged.Broadcast(GetHealthPercent(), Health);
 	}
-	
+
 	Mana = Stats[EPlayerStat::MaxMana];
-	if(OnManaChanged.IsBound())
+	if (OnManaChanged.IsBound())
 	{
 		OnManaChanged.Broadcast(GetManaPercent(), Mana);
 	}
+	// create a timer delegate for mana recovery
+	const FTimerDelegate RecoverManaOverTimeDelegate =
+		FTimerDelegate::CreateUObject(this,
+		                              &UStatsComponent::RecoverMana,
+		                              GetManaRecoveryAmount());
+	GetWorld()->GetTimerManager().SetTimer(ManaRecoveryTimerHandle, RecoverManaOverTimeDelegate,
+	                               GetManaRecoveryRate(), true);
 
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UStatsComponent::OnTakeAnyDamage);
+}
+
+float UStatsComponent::GetManaRecoveryRate() const
+{
+	return 5/Stats[EPlayerStat::Intelligence];
+}
+
+float UStatsComponent::GetManaRecoveryAmount() const
+{
+	return 1.f * Stats[EPlayerStat::Intelligence]/10;
 }
 
 
@@ -106,7 +121,7 @@ void UStatsComponent::LevelUp()
 	}
 }
 
-void UStatsComponent::ConsumeMana(float Amount)
+void UStatsComponent::ConsumeMana(const float Amount)
 {
 	if (Mana >= Amount)
 	{
@@ -124,16 +139,44 @@ void UStatsComponent::ConsumeMana(float Amount)
 	}
 }
 
-void UStatsComponent::ReduceHealth(float Amount)
+void UStatsComponent::ReduceHealth(const float Amount)
 {
 	Health -= Amount;
-	if(Health <= 0.f)
+	if (Health <= 0.f)
 	{
 		Health = 0.f;
-		if(GEngine)
+		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 2.f,
-				FColor::Red, TEXT("You are dead."));
+			                                 FColor::Red, TEXT("You are dead."));
 	}
+	if (OnHealthChanged.IsBound())
+	{
+		OnHealthChanged.Broadcast(GetHealthPercent(), Health);
+	}
+}
+
+void UStatsComponent::RecoverMana(const float Amount)
+{
+	Mana += Amount;
+	if (Mana > Stats[EPlayerStat::MaxMana])
+	{
+		Mana = Stats[EPlayerStat::MaxMana];
+	}
+
+	if (OnManaChanged.IsBound())
+	{
+		OnManaChanged.Broadcast(GetManaPercent(), Mana);
+	}
+}
+
+void UStatsComponent::RecoverHealth(const float Amount)
+{
+	Health += Amount;
+	if (Health > Stats[EPlayerStat::MaxHealth])
+	{
+		Health = Stats[EPlayerStat::MaxHealth];
+	}
+
 	if (OnHealthChanged.IsBound())
 	{
 		OnHealthChanged.Broadcast(GetHealthPercent(), Health);

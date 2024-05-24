@@ -38,16 +38,18 @@ protected:
 	virtual void BeginPlay() override;
 
 	float Health = 0.f;
+	
 	float Mana = 0.f;
+	float GetManaRecoveryRate() const;
+	float GetManaRecoveryAmount() const;
 
 	UPROPERTY(EditAnywhere, Category = "Stats")
-	int32 MaxLevel = 20;
-	int32 Level = 1;
-
-
+	int16 MaxLevel = 20;
+	int16 Level = 1;
+	
 	UPROPERTY(EditAnywhere, Category = "Stats")
-	int32 MaxXp = 100;
-	int32 Xp = 0;
+	int16 MaxXp = 100;
+	int16 Xp = 0;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true"))
 	TMap<EPlayerStat, float> Stats = {
@@ -66,6 +68,9 @@ protected:
 
 	void UpdateStat(EPlayerStat StatToUpdate, float Value);
 
+private:
+	FTimerHandle ManaRecoveryTimerHandle;
+	
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
@@ -94,6 +99,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ReduceHealth(float Amount);
+
+	UFUNCTION(BlueprintCallable)
+	void RecoverMana(float Amount);
+
+	UFUNCTION(BlueprintCallable)
+	void RecoverHealth(float Amount);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChanged OnHealthChanged;
