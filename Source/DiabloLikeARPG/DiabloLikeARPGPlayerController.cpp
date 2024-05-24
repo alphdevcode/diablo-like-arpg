@@ -73,6 +73,25 @@ void ADiabloLikeARPGPlayerController::SetupInputComponent()
 		                                   &ADiabloLikeARPGPlayerController::OnRootedReleased);
 		EnhancedInputComponent->BindAction(SetRootedAction, ETriggerEvent::Canceled, this,
 		                                   &ADiabloLikeARPGPlayerController::OnRootedReleased);
+
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Started, this,
+										   &ADiabloLikeARPGPlayerController::OnMoveStarted);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this,
+		                                   &ADiabloLikeARPGPlayerController::OnMoveTriggered);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this,
+		                                   &ADiabloLikeARPGPlayerController::OnMoveReleased);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Canceled, this,
+		                                   &ADiabloLikeARPGPlayerController::OnMoveReleased);
+
+		EnhancedInputComponent->BindAction(SetRotateCameraAction, ETriggerEvent::Started, this,
+											   &ADiabloLikeARPGPlayerController::OnSetRotateCameraStarted);
+		EnhancedInputComponent->BindAction(SetRotateCameraAction, ETriggerEvent::Completed, this,
+											   &ADiabloLikeARPGPlayerController::OnSetRotateCameraReleased);
+		EnhancedInputComponent->BindAction(SetRotateCameraAction, ETriggerEvent::Canceled, this,
+											   &ADiabloLikeARPGPlayerController::OnSetRotateCameraReleased);
+		
+		EnhancedInputComponent->BindAction(LookHorizontalAction, ETriggerEvent::Triggered, this,
+		                                   &ADiabloLikeARPGPlayerController::OnLookHorizontalTriggered);
 	}
 }
 
@@ -87,7 +106,7 @@ void ADiabloLikeARPGPlayerController::OnRootedStarted()
 
 void ADiabloLikeARPGPlayerController::OnRootedTriggered()
 {
-	LookAtDestination();
+	LookAtDestination(CachedDestination);
 }
 
 void ADiabloLikeARPGPlayerController::OnRootedReleased()
@@ -97,6 +116,53 @@ void ADiabloLikeARPGPlayerController::OnRootedReleased()
 		ControlledCharacter->GetCharacterMovement()
 		                   ->SetMovementMode(EMovementMode::MOVE_Walking);
 	}
+}
+
+void ADiabloLikeARPGPlayerController::OnMoveStarted()
+{
+	StopMovement();
+	bIsManualMoving = true;
+}
+
+void ADiabloLikeARPGPlayerController::OnMoveTriggered(const FInputActionValue& ActionValue)
+{
+	if(!bIsManualMoving) return;
+	
+	if (ControlledCharacter != nullptr && ActionValue.GetValueType() == EInputActionValueType::Axis2D)
+	{
+		const FVector RightDirection = UKismetMathLibrary::GetRightVector(
+			FRotator(0.f, GetControlRotation().Yaw, GetControlRotation().Roll));
+		ControlledCharacter->AddMovementInput(RightDirection,
+			ActionValue.Get<FInputActionValue::Axis2D>().X);
+
+		const FVector ForwardDirection = UKismetMathLibrary::GetForwardVector(
+			FRotator(0.f, GetControlRotation().Yaw, 0.f));
+		ControlledCharacter->AddMovementInput(ForwardDirection,
+			ActionValue.Get<FInputActionValue::Axis2D>().Y);
+	}
+}
+
+void ADiabloLikeARPGPlayerController::OnMoveReleased()
+{
+	bIsManualMoving = false;
+}
+
+void ADiabloLikeARPGPlayerController::OnLookHorizontalTriggered(const FInputActionValue& ActionValue)
+{
+	if(bCanRotateCamera && ActionValue.GetValueType() == EInputActionValueType::Axis1D)
+	{
+		ControlledCharacter->AddControllerYawInput(ActionValue.Get<FInputActionValue::Axis1D>());
+	}
+}
+
+void ADiabloLikeARPGPlayerController::OnSetRotateCameraStarted()
+{
+	bCanRotateCamera = true;
+}
+
+void ADiabloLikeARPGPlayerController::OnSetRotateCameraReleased()
+{
+	bCanRotateCamera = false;
 }
 
 void ADiabloLikeARPGPlayerController::OnInputStarted()
@@ -126,7 +192,8 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 	// if(GEngine && bHitSuccessful)
 	//  		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange,
 	// 		"Hit Damageable");
-	
+
+	// If it didn't hit any damageable actor, check if it hit any surface
 	if (!bHitSuccessful)
 	{
 		bHitDamageableActor = false;
@@ -144,6 +211,9 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 
 	if (bHitDamageableActor)
 	{
+		// Invalidate current manual moving (if active), so player can move to hit damageable actor
+		bIsManualMoving = false;
+		
 		if (FVector::Dist(CachedDestination, ControlledCharacter->GetActorLocation())
 			<= ControlledCharacter->GetInteractionRange())
 		{
@@ -156,7 +226,10 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 	}
 	else
 	{
-		MoveTo(CachedDestination);
+		if(!bIsManualMoving)
+		{
+			MoveTo(CachedDestination);
+		}
 	}
 }
 
@@ -165,6 +238,10 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationReleased()
 	// If it was a short press
 	if (FollowTime <= ShortPressThreshold)
 	{
+		if(bIsManualMoving)
+		{
+			return;
+		}
 		// We move there and spawn some particles
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
 		if(!bHitDamageableActor)
@@ -190,7 +267,7 @@ void ADiabloLikeARPGPlayerController::OnTouchReleased()
 	OnSetDestinationReleased();
 }
 
-void ADiabloLikeARPGPlayerController::LookAtDestination()
+void ADiabloLikeARPGPlayerController::LookAtDestination(const FVector& Destination) const
 {
 	if (ControlledCharacter == nullptr)
 	{
@@ -200,7 +277,7 @@ void ADiabloLikeARPGPlayerController::LookAtDestination()
 	}
 
 	const FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(
-		ControlledCharacter->GetActorLocation(), CachedDestination);
+		ControlledCharacter->GetActorLocation(), Destination);
 
 	// if(GEngine)
 	// 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,

@@ -8,8 +8,9 @@
 #include "InputActionValue.h"
 #include "DiabloLikeARPGPlayerController.generated.h"
 
-/** Forward declaration to improve compiling times */
 class UNiagaraSystem;
+/** Forward declaration to improve compiling times */
+class UInputAction;
 
 UCLASS()
 class ADiabloLikeARPGPlayerController : public APlayerController
@@ -30,28 +31,37 @@ public:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
+
+	/** Click Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* SetDestinationClickAction;
+
+	/** Touch Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* SetDestinationTouchAction;
+
+	/** Rooted Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* SetRootedAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* MoveAction;
 	
-	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* SetDestinationClickAction;
-
-	/** Jump Input Action */
+	UInputAction* LookHorizontalAction;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* SetDestinationTouchAction;
-
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* SetRootedAction;
+	UInputAction* SetRotateCameraAction;
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
-	
+
 	bool bHitDamageableActor;
 
 	UPROPERTY()
 	class ADiabloLikeARPGCharacter* ControlledCharacter;
-	
+
 	virtual void SetupInputComponent() override;
 
 	// To add mapping context
@@ -70,14 +80,24 @@ protected:
 	void OnRootedTriggered();
 	void OnRootedReleased();
 
+	void OnMoveStarted();
+	void OnMoveTriggered(const FInputActionValue& ActionValue);
+	void OnMoveReleased();
+	
+	void OnLookHorizontalTriggered(const FInputActionValue& ActionValue);
+
+	void OnSetRotateCameraStarted();
+	void OnSetRotateCameraReleased();
+
 private:
 	FVector CachedDestination;
+
+	bool bCanRotateCamera;
+	bool bIsManualMoving;
 
 	bool bIsTouch; // Is it a touch device
 	float FollowTime; // For how long it has been pressed
 
 	// Rotate the pawn to look at the destination
-	void LookAtDestination();
+	void LookAtDestination(const FVector& Destination) const;
 };
-
-
