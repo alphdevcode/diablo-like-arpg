@@ -51,7 +51,7 @@ protected:
 	int16 MaxXp = 100;
 	int16 Xp = 0;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true"))
 	TMap<EPlayerStat, float> Stats = {
 		{EPlayerStat::MaxHealth, 100.f},
 		{EPlayerStat::MaxMana, 100.f},

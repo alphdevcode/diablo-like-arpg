@@ -27,7 +27,7 @@ void AAbility::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(RemainingCooldown > 0)
+	if (RemainingCooldown > 0)
 	{
 		RemainingCooldown -= DeltaTime;
 	}
@@ -35,7 +35,7 @@ void AAbility::Tick(float DeltaTime)
 
 bool AAbility::CanActivateAbility() const
 {
-	if(RemainingCooldown > 0)
+	if (RemainingCooldown > 0)
 	{
 		return false;
 	}
@@ -45,20 +45,34 @@ bool AAbility::CanActivateAbility() const
 	{
 		return StatsComponent->GetMana() >= ManaCost;
 	}
-	
-	if(GEngine)
+
+	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
-			TEXT("Can not find StatsComponent when trying to activate ability."));
+		                                 TEXT("Can not find StatsComponent when trying to activate ability."));
 	return false;
 }
 
-void AAbility::ActivateAbility()
+void AAbility::SpawnAbilityEffects()
+{
+	for (TSubclassOf<AAbilityEffect> Effect : Effects)
+	{
+		if (Effect.GetDefaultObject() != nullptr && Caster != nullptr)
+		{
+			AAbilityEffect* AbilityEffect = GetWorld()->
+				SpawnActor<AAbilityEffect>(Effect, EffectsSpawnLocation, FRotator::ZeroRotator);
+			AbilityEffect->SetOwner(Caster);
+			AbilityEffect->SetPatentAbility(this);
+		}
+	}
+}
+
+void AAbility::ActivateAbility(const FVector& NewEffectsSpawnLocation)
 {
 	if (!CanActivateAbility())
 	{
-		if(GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
-				TEXT("Can not activate ability"));
+		// if (GEngine)
+		// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
+		// 	                                 TEXT("Can not activate ability"));
 		return;
 	}
 	// if (!bIsActive)
@@ -78,22 +92,9 @@ void AAbility::ActivateAbility()
 		StatsComponent->ConsumeMana(ManaCost);
 	}
 	
-	for (TSubclassOf<AAbilityEffect> Effect : Effects)
+	EffectsSpawnLocation = NewEffectsSpawnLocation;
+	if(bAutoActivateAbilityEffects)
 	{
-		if (Effect.GetDefaultObject() != nullptr)
-		{
-			const FTransform SpawnTransform
-			= (Target != nullptr ? Target : Caster)->GetActorTransform();
-
-			if (Caster != nullptr)
-			{
-				AAbilityEffect* AbilityEffect = GetWorld()->
-					SpawnActor<AAbilityEffect>(Effect, SpawnTransform);
-				AbilityEffect->SetOwner(GetOwner());
-			}
-			
-		}
+		SpawnAbilityEffects();
 	}
-
-	// Destroy();
 }

@@ -24,6 +24,11 @@ void AEnemyARPGCharacter::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	Super::NotifyActorOnClicked(ButtonPressed);
 
+	if(GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("ENEMY CLICKED"));
+	}
+
 	if(ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(this, 0))
 	{
 		if(IInteractorInterface* Interactor = Cast<IInteractorInterface>(PlayerCharacter))
@@ -55,7 +60,7 @@ void AEnemyARPGCharacter::Interact(ACharacter* InteractorCharacter)
 	}
 }
 
-const AActor* AEnemyARPGCharacter::GetInteractableActor() const
+AActor* AEnemyARPGCharacter::GetInteractableActor()
 {
 	return this;
 }

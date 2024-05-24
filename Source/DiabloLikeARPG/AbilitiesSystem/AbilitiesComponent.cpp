@@ -4,6 +4,7 @@
 #include "AbilitiesComponent.h"
 
 #include "AbilityAttack.h"
+#include "DiabloLikeARPG/Characters/DiabloLikeARPGCharacter.h"
 #include "GameFramework/Character.h"
 
 // Sets default values for this component's properties
@@ -48,7 +49,6 @@ void UAbilitiesComponent::AddAbility(const TSubclassOf<AAbility>& AbilityClass, 
 		AAbility* Ability = GetWorld()->SpawnActor<AAbility>(AbilityClass);
 		Ability->SetOwner(GetOwner());
 		Ability->Caster = Cast<ACharacter>(GetOwner());
-		Ability->Target = Cast<ACharacter>(GetOwner());
 		AbilitiesArray.Add(Ability);
 	}
 	else
@@ -67,5 +67,11 @@ void UAbilitiesComponent::ActivatePrimaryAttackAbility() const
 		return;
 	}
 	
-	ClickAssignedAbilities[0]->ActivateAbility(); 
+	ClickAssignedAbilities[0]->ActivateAbility(GetOwner()->GetActorLocation());
+
+	ADiabloLikeARPGCharacter* OwnerCharacter = Cast<ADiabloLikeARPGCharacter>(GetOwner());
+	if(OwnerCharacter != nullptr)
+	{
+		ClickAssignedAbilities[0]->Target = OwnerCharacter->GetLastInteractableActor();
+	}
 }

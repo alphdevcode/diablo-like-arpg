@@ -7,6 +7,7 @@
 #include "Ability.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAbilityActivated);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FActivateAbilityEffects);
 
 UCLASS()
 class DIABLOLIKEARPG_API AAbility : public AActor
@@ -21,6 +22,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, Category = "Ability")
+	bool bAutoActivateAbilityEffects = false;
+	
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	float ManaCost;
 
@@ -47,6 +51,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "AbilityInfo")
 	UTexture2D* AbilityIcon;
 
+	FVector EffectsSpawnLocation;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -56,7 +62,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilityTargetting")
 	AActor* Target;
-	
+
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilityTargetting")
+	// FVector EffectsSpawnLocation;
+	//
 	UFUNCTION(BlueprintPure)
 	UTexture2D* GetAbilityIcon() const { return AbilityIcon; }
 
@@ -69,13 +78,19 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool CanActivateAbility() const;
 
+	UFUNCTION(BlueprintCallable)
+	void SpawnAbilityEffects();
+
 	// UFUNCTION(BlueprintPure)
 	// bool IsActive() const;
-
+	
 	UFUNCTION(BlueprintCallable)
-	void ActivateAbility();
-
-	// add an event dispatcher
+	void ActivateAbility(const FVector& EffectsSpawnLocation);
+	
     UPROPERTY(BlueprintAssignable, Category = "Ability")
 	FOnAbilityActivated OnAbilityActivated;
+	
+    UPROPERTY(BlueprintAssignable, Category = "Ability")
+	FActivateAbilityEffects ActivateAbilityEffects;
+
 };

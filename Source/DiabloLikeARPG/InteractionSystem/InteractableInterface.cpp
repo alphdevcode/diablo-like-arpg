@@ -9,7 +9,7 @@ void IInteractableInterface::Interact(ACharacter* InteractorCharacter)
 {
 }
 
-const AActor* IInteractableInterface::GetInteractableActor() const
+AActor* IInteractableInterface::GetInteractableActor()
 {
 	return nullptr;
 }

@@ -238,7 +238,7 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationReleased()
 	// If it was a short press
 	if (FollowTime <= ShortPressThreshold)
 	{
-		if(bIsManualMoving)
+		if(bIsManualMoving || bHitDamageableActor)
 		{
 			return;
 		}
@@ -267,7 +267,7 @@ void ADiabloLikeARPGPlayerController::OnTouchReleased()
 	OnSetDestinationReleased();
 }
 
-void ADiabloLikeARPGPlayerController::LookAtDestination(const FVector& Destination) const
+void ADiabloLikeARPGPlayerController::LookAtDestination(const FVector& Destination)
 {
 	if (ControlledCharacter == nullptr)
 	{

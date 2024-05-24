@@ -50,7 +50,7 @@ void AInteractableActor::Interact(ACharacter* InteractorCharacter)
 			FString::Printf(TEXT("Interacting with %s"), *GetName()));	
 }
 
-const AActor* AInteractableActor::GetInteractableActor() const
+AActor* AInteractableActor::GetInteractableActor()
 {
 	return this;
 }

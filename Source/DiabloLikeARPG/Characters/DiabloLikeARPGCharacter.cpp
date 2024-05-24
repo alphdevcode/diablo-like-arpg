@@ -94,15 +94,9 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 		// UnPossessed();
 
 		const FName PelvisBone = "pelvis";
-		GetMesh()->SetAllBodiesBelowSimulatePhysics(
-			PelvisBone,
-			true,
-			true);
-		GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(
-			PelvisBone,
-			1.f,
-			false,
-			true);
+		GetMesh()->SetAllBodiesBelowSimulatePhysics(PelvisBone,true,	true);
+		GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(PelvisBone,
+			1.f,false,true);
 
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
@@ -134,7 +128,18 @@ void ADiabloLikeARPGCharacter::CheckForInteractions()
 	if (DistanceToTarget <= GetInteractionRange())
 	{
 		CurrentInteractable->Interact(this);
-		GetCharacterMovement()->StopMovementImmediately();
+		if(CurrentInteractable != LastInteractable)
+		{
+			LastInteractable = CurrentInteractable;
+			if(GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue,
+					FString::Printf(TEXT("Updating Last Interactable from %s to %s"),
+						(LastInteractable != nullptr ? *LastInteractable->GetInteractableActor()->GetName() : TEXT("null")),
+						(CurrentInteractable != nullptr ? *CurrentInteractable->GetInteractableActor()->GetName() : TEXT("null"))));
+			}
+		}
+		GetController()->StopMovement();
 		CurrentInteractable = nullptr;
 	}
 }
@@ -166,11 +171,20 @@ void ADiabloLikeARPGCharacter::SetInteractableTarget(IInteractableInterface* Int
 	if (Interactable != nullptr)
 	{
 		CurrentInteractable = Interactable;
+		// LastInteractable = Interactable;
+	}else
+	{
+		if(GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
+				TEXT("Can not set InteractableTarget. Interactable is null"));
+		}
 	}
 }
 
 float ADiabloLikeARPGCharacter::GetInteractionRange()
 {
+	// TODO: Implement a way to get the interaction range from the Active Ability
 	return 200.f;
 }
 
@@ -178,4 +192,13 @@ void ADiabloLikeARPGCharacter::ActivatePrimaryAttackAbility() const
 {
 	// TODO: refactor to use the ability set in the AbilitiesComponent array at index 0
 	AbilitiesComponent->ActivatePrimaryAttackAbility();
+}
+
+AActor* ADiabloLikeARPGCharacter::GetLastInteractableActor()
+{
+	if(LastInteractable == nullptr)
+	{
+		return nullptr;
+	}
+	return LastInteractable->GetInteractableActor();
 }

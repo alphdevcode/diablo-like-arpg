@@ -35,5 +35,5 @@ public:
 	
 	// IInteractableInterface
 	virtual void Interact(ACharacter* InteractorCharacter) override;
-	virtual const AActor* GetInteractableActor() const override;
+	virtual AActor* GetInteractableActor() override;
 };

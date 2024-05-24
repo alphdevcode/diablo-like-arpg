@@ -23,5 +23,5 @@ class DIABLOLIKEARPG_API IInteractableInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void Interact(ACharacter* InteractorCharacter);
-	virtual const AActor* GetInteractableActor() const;
+	virtual AActor* GetInteractableActor();
 };

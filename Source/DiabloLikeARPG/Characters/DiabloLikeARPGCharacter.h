@@ -54,6 +54,7 @@ private:
 
 protected:
 	IInteractableInterface* CurrentInteractable;
+	IInteractableInterface* LastInteractable;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UAnimMontage* HitAnimMontage;
@@ -73,4 +74,6 @@ public:
 	virtual float GetInteractionRange() override;
 
 	void ActivatePrimaryAttackAbility() const;
+
+	AActor* GetLastInteractableActor();
 };
