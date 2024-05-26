@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "AbilitiesSystem/AbilitiesComponent.h"
 #include "Characters/DiabloLikeARPGCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -46,13 +47,13 @@ void ADiabloLikeARPGPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
 	{
 		// Setup mouse input events
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this,
+		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Started, this,
 		                                   &ADiabloLikeARPGPlayerController::OnInputStarted);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this,
+		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Triggered, this,
 		                                   &ADiabloLikeARPGPlayerController::OnClickTriggered);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this,
+		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Completed, this,
 		                                   &ADiabloLikeARPGPlayerController::OnClickReleased);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this,
+		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Canceled, this,
 		                                   &ADiabloLikeARPGPlayerController::OnClickReleased);
 
 		// Setup touch input events
@@ -92,7 +93,41 @@ void ADiabloLikeARPGPlayerController::SetupInputComponent()
 		
 		EnhancedInputComponent->BindAction(LookHorizontalAction, ETriggerEvent::Triggered, this,
 		                                   &ADiabloLikeARPGPlayerController::OnLookHorizontalTriggered);
+
+		SetupAbilitiesInput(EnhancedInputComponent);
 	}
+}
+
+
+void ADiabloLikeARPGPlayerController::SetupAbilitiesInput(UEnhancedInputComponent* EnhancedInputComponent)
+{
+	
+	EnhancedInputComponent->BindAction(ActivateAbility1Action, ETriggerEvent::Started, this,
+										   &ADiabloLikeARPGPlayerController::OnAbilityActivated, 0);
+	EnhancedInputComponent->BindAction(ActivateAbility2Action, ETriggerEvent::Started, this,
+										   &ADiabloLikeARPGPlayerController::OnAbilityActivated, 1);
+	EnhancedInputComponent->BindAction(ActivateAbility3Action, ETriggerEvent::Started, this,
+										   &ADiabloLikeARPGPlayerController::OnAbilityActivated, 2);
+	EnhancedInputComponent->BindAction(ActivateAbility4Action, ETriggerEvent::Started, this,
+										   &ADiabloLikeARPGPlayerController::OnAbilityActivated, 3);
+
+	// We're currently handling Left Click input from the interactable interface,
+	// so it can trigger multiple actions based on the context. The action was left here,
+	// but it's not bound in the mapping context.
+	EnhancedInputComponent->BindAction(ActivateClickAbility1Action, ETriggerEvent::Started, this,
+										   &ADiabloLikeARPGPlayerController::OnClickAbilityActivated, 0);
+	EnhancedInputComponent->BindAction(ActivateClickAbility2Action, ETriggerEvent::Started, this,
+										   &ADiabloLikeARPGPlayerController::OnClickAbilityActivated, 1);
+}
+
+void ADiabloLikeARPGPlayerController::OnAbilityActivated(const int AbilityIndex)
+{
+	ControlledCharacter->AbilitiesComponent->ActivateAbility(AbilityIndex);
+}
+
+void ADiabloLikeARPGPlayerController::OnClickAbilityActivated(const int AbilityIndex)
+{
+	ControlledCharacter->AbilitiesComponent->ActivateClickAbility(AbilityIndex);
 }
 
 void ADiabloLikeARPGPlayerController::OnRootedStarted()

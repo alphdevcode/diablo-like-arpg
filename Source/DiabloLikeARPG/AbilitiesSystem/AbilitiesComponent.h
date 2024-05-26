@@ -31,6 +31,14 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
 	TArray<AAbility*> ClickAssignedAbilities;
 
+	UPROPERTY()
+	AAbility* LastActiveAbility;
+
+private:
+	const AAbility* ActivateAbilityFromCollection(
+		const TArray<AAbility*>& AbilitiesArray,
+		const int AbilityIndex);
+
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
@@ -39,5 +47,8 @@ public:
 		TArray<AAbility*>& AbilitiesArray) const;
 
 	UFUNCTION(BlueprintCallable)
-	void ActivatePrimaryAttackAbility() const;
+	void ActivatePrimaryAttackAbility();
+
+	const AAbility* ActivateAbility(const int AbilityIndex);
+	const AAbility* ActivateClickAbility(const int AbilityIndex);
 };

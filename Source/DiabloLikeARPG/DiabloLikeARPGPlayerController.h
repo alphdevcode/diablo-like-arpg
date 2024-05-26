@@ -34,7 +34,7 @@ public:
 
 	/** Click Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* SetDestinationClickAction;
+	UInputAction* LeftClickAction;
 
 	/** Touch Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
@@ -53,6 +53,24 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* SetRotateCameraAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Ability", meta=(AllowPrivateAccess = "true"))
+	UInputAction* ActivateAbility1Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Ability", meta=(AllowPrivateAccess = "true"))
+	UInputAction* ActivateAbility2Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Ability", meta=(AllowPrivateAccess = "true"))
+	UInputAction* ActivateAbility3Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Ability", meta=(AllowPrivateAccess = "true"))
+	UInputAction* ActivateAbility4Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Ability", meta=(AllowPrivateAccess = "true"))
+	UInputAction* ActivateClickAbility1Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Ability", meta=(AllowPrivateAccess = "true"))
+	UInputAction* ActivateClickAbility2Action;
+
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
@@ -63,11 +81,13 @@ protected:
 	class ADiabloLikeARPGCharacter* ControlledCharacter;
 
 	virtual void SetupInputComponent() override;
+	void SetupAbilitiesInput(UEnhancedInputComponent* EnhancedInputComponent);
+	void OnAbilityActivated(const int AbilityIndex);
+	void OnClickAbilityActivated(int AbilityIndex);
 
-	// To add mapping context
 	virtual void BeginPlay();
 
-	/** Input handlers for SetDestination action. */
+	/** Input handlers for SetDestination/Click action. */
 	void OnInputStarted();
 	void MoveTo(const FVector& Destination) const;
 	void OnClickTriggered();

@@ -58,17 +58,9 @@ void UAbilitiesComponent::AddAbility(const TSubclassOf<AAbility>& AbilityClass, 
 	}
 }
 
-void UAbilitiesComponent::ActivatePrimaryAttackAbility() const
+void UAbilitiesComponent::ActivatePrimaryAttackAbility()
 {
-	if (ClickAssignedAbilities[0] == nullptr)
-	{
-		if(GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow,
-											 "No ability assigned to Primary Ability spot");
-		return;
-	}
-	
-	ClickAssignedAbilities[0]->ActivateAbility(GetOwner()->GetActorLocation());
+	if(ActivateClickAbility(0) == nullptr) return;
 
 	ADiabloLikeARPGCharacter* OwnerCharacter = Cast<ADiabloLikeARPGCharacter>(GetOwner());
 
@@ -78,4 +70,29 @@ void UAbilitiesComponent::ActivatePrimaryAttackAbility() const
 	{
 		ClickAssignedAbilities[0]->Target = OwnerCharacter->GetTargetInteractableActor();
 	}
+}
+
+const AAbility* UAbilitiesComponent::ActivateAbility(const int AbilityIndex)
+{
+    return ActivateAbilityFromCollection(AssignedAbilities, AbilityIndex);
+}
+
+const AAbility* UAbilitiesComponent::ActivateClickAbility(const int AbilityIndex)
+{
+    return ActivateAbilityFromCollection(ClickAssignedAbilities, AbilityIndex);
+}
+
+const AAbility* UAbilitiesComponent::ActivateAbilityFromCollection(
+	const TArray<AAbility*>& AbilitiesArray, const int AbilityIndex)
+{
+    if (!AbilitiesArray.IsValidIndex(AbilityIndex) || AbilitiesArray[AbilityIndex] == nullptr)
+    {
+        if(GEngine)
+            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow,
+            TEXT("No ability assigned to selected Ability spot"));
+        return nullptr;
+    }
+    
+    AbilitiesArray[AbilityIndex]->ActivateAbility(GetOwner()->GetActorLocation());
+    return AbilitiesArray[AbilityIndex];
 }
