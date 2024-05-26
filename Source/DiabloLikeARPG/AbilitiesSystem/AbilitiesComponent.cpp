@@ -17,7 +17,7 @@ UAbilitiesComponent::UAbilitiesComponent()
 void UAbilitiesComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	for (const TSubclassOf<AAbility>& AbilityClass : AssignedAbilityClasses)
 	{
 		AddAbility(AbilityClass, AssignedAbilities);
@@ -45,7 +45,7 @@ void UAbilitiesComponent::AddAbility(const TSubclassOf<AAbility>& AbilityClass, 
 		Ability->Caster = Cast<ACharacter>(GetOwner());
 
 		// If the owner is an enemy set the target of all abilities to the player
-		if(Cast<AEnemyARPGCharacter>(GetOwner()))
+		if (Cast<AEnemyARPGCharacter>(GetOwner()))
 		{
 			Ability->Target = UGameplayStatics::GetPlayerPawn(this, 0);
 		}
@@ -60,13 +60,13 @@ void UAbilitiesComponent::AddAbility(const TSubclassOf<AAbility>& AbilityClass, 
 
 void UAbilitiesComponent::ActivatePrimaryAttackAbility()
 {
-	if(ActivateClickAbility(0) == nullptr) return;
+	if (ActivateClickAbility(0) == nullptr) return;
 
 	ADiabloLikeARPGCharacter* OwnerCharacter = Cast<ADiabloLikeARPGCharacter>(GetOwner());
 
 	// Only assign the Target to the last interactable if we are the player
-	if(OwnerCharacter != nullptr
-		&& OwnerCharacter == UGameplayStatics::GetPlayerCharacter(this,0))
+	if (OwnerCharacter != nullptr
+		&& OwnerCharacter == UGameplayStatics::GetPlayerCharacter(this, 0))
 	{
 		ClickAssignedAbilities[0]->Target = OwnerCharacter->GetTargetInteractableActor();
 	}
@@ -74,25 +74,30 @@ void UAbilitiesComponent::ActivatePrimaryAttackAbility()
 
 const AAbility* UAbilitiesComponent::ActivateAbility(const int AbilityIndex)
 {
-    return ActivateAbilityFromCollection(AssignedAbilities, AbilityIndex);
+	return ActivateAbilityFromCollection(AssignedAbilities, AbilityIndex);
 }
 
 const AAbility* UAbilitiesComponent::ActivateClickAbility(const int AbilityIndex)
 {
-    return ActivateAbilityFromCollection(ClickAssignedAbilities, AbilityIndex);
+	return ActivateAbilityFromCollection(ClickAssignedAbilities, AbilityIndex);
 }
 
 const AAbility* UAbilitiesComponent::ActivateAbilityFromCollection(
 	const TArray<AAbility*>& AbilitiesArray, const int AbilityIndex)
 {
-    if (!AbilitiesArray.IsValidIndex(AbilityIndex) || AbilitiesArray[AbilityIndex] == nullptr)
-    {
-        if(GEngine)
-            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow,
-            TEXT("No ability assigned to selected Ability spot"));
-        return nullptr;
-    }
-    
-    AbilitiesArray[AbilityIndex]->ActivateAbility(GetOwner()->GetActorLocation());
-    return AbilitiesArray[AbilityIndex];
+	if (!AbilitiesArray.IsValidIndex(AbilityIndex) || AbilitiesArray[AbilityIndex] == nullptr)
+	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow,
+			                                 TEXT("No ability assigned to selected Ability spot"));
+		return nullptr;
+	}
+
+	AbilitiesArray[AbilityIndex]->ActivateAbility(GetOwner()->GetActorLocation());
+	if (LastActivatedAbility != nullptr && LastActivatedAbility != AbilitiesArray[AbilityIndex])
+	{
+		LastActivatedAbility->ResetAbility();
+	}
+	LastActivatedAbility = AbilitiesArray[AbilityIndex];
+	return AbilitiesArray[AbilityIndex];
 }

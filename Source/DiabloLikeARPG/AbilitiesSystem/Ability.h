@@ -21,9 +21,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void Initialize();
-
-	virtual void ResetAbility();
-
+	
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	bool bAutoActivateAbilityEffects = false;
 	
@@ -87,6 +85,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void ActivateAbility(const FVector& EffectsSpawnLocation);
+
+	virtual void ResetAbility();
 	
     UPROPERTY(BlueprintAssignable, Category = "Ability")
 	FOnAbilityActivated OnAbilityActivated;

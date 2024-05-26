@@ -32,7 +32,7 @@ protected:
 	TArray<AAbility*> ClickAssignedAbilities;
 
 	UPROPERTY()
-	AAbility* LastActiveAbility;
+	AAbility* LastActivatedAbility;
 
 private:
 	const AAbility* ActivateAbilityFromCollection(
