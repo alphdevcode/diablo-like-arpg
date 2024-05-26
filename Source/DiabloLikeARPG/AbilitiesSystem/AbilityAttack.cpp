@@ -106,7 +106,7 @@ void AAbilityAttack::HandleAbilityEffectsSpawning()
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 2.f,
 			                                 FColor::Red,
-			                                 TEXT("Trying to spawn abilities effect with a nullptr Caster"));
+			                                 TEXT("Trying to spawn abilities effect with a nullptr Target"));
 	}
 	bShouldLookAtTarget = false;
 }

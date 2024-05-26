@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2024 AlphDevCode. All Rights Reserved.
 
 
 #include "EnemyARPGCharacter.h"
@@ -8,7 +8,7 @@
 
 AEnemyARPGCharacter::AEnemyARPGCharacter()
 {
-	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar")); 
+	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
 	HealthBar->SetupAttachment(RootComponent);
 	HealthBar->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
 }
@@ -16,7 +16,7 @@ AEnemyARPGCharacter::AEnemyARPGCharacter()
 void AEnemyARPGCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	HealthBar->SetVisibility(false);
 }
 
@@ -24,17 +24,15 @@ void AEnemyARPGCharacter::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	Super::NotifyActorOnClicked(ButtonPressed);
 
-	if(GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("ENEMY CLICKED"));
-	}
+	// if(GEngine)
+	// {
+	// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("ENEMY CLICKED"));
+	// }
 
-	if(ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(this, 0))
+	if (IInteractorInterface* Interactor = Cast<IInteractorInterface>
+		(UGameplayStatics::GetPlayerCharacter(this, 0)))
 	{
-		if(IInteractorInterface* Interactor = Cast<IInteractorInterface>(PlayerCharacter))
-		{
-			Interactor->SetInteractableTarget(Cast<IInteractableInterface>(this));
-		}
+		Interactor->SetInteractableTarget(Cast<IInteractableInterface>(this));
 	}
 }
 
@@ -54,7 +52,7 @@ void AEnemyARPGCharacter::NotifyActorEndCursorOver()
 
 void AEnemyARPGCharacter::Interact(ACharacter* InteractorCharacter)
 {
-	if(ADiabloLikeARPGCharacter* DiabloLikeARPGCharacter = Cast<ADiabloLikeARPGCharacter>(InteractorCharacter))
+	if (ADiabloLikeARPGCharacter* DiabloLikeARPGCharacter = Cast<ADiabloLikeARPGCharacter>(InteractorCharacter))
 	{
 		DiabloLikeARPGCharacter->ActivatePrimaryAttackAbility();
 	}

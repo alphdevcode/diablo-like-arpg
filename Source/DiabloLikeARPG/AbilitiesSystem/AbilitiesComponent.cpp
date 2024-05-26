@@ -5,7 +5,9 @@
 
 #include "AbilityAttack.h"
 #include "DiabloLikeARPG/Characters/DiabloLikeARPGCharacter.h"
+#include "DiabloLikeARPG/Characters/EnemyARPGCharacter.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 
 UAbilitiesComponent::UAbilitiesComponent()
 {
@@ -15,7 +17,7 @@ UAbilitiesComponent::UAbilitiesComponent()
 void UAbilitiesComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	for (const TSubclassOf<AAbility>& AbilityClass : AssignedAbilityClasses)
 	{
 		AddAbility(AbilityClass, AssignedAbilities);
@@ -41,6 +43,13 @@ void UAbilitiesComponent::AddAbility(const TSubclassOf<AAbility>& AbilityClass, 
 		AAbility* Ability = GetWorld()->SpawnActor<AAbility>(AbilityClass);
 		Ability->SetOwner(GetOwner());
 		Ability->Caster = Cast<ACharacter>(GetOwner());
+
+		// If the owner is an enemy set the target of all abilities to the player
+		if(Cast<AEnemyARPGCharacter>(GetOwner()))
+		{
+			Ability->Target = UGameplayStatics::GetPlayerPawn(this, 0);
+		}
+
 		AbilitiesArray.Add(Ability);
 	}
 	else
@@ -62,7 +71,10 @@ void UAbilitiesComponent::ActivatePrimaryAttackAbility() const
 	ClickAssignedAbilities[0]->ActivateAbility(GetOwner()->GetActorLocation());
 
 	ADiabloLikeARPGCharacter* OwnerCharacter = Cast<ADiabloLikeARPGCharacter>(GetOwner());
-	if(OwnerCharacter != nullptr)
+
+	// Only assign the Target to the las interactable if we are the player
+	if(OwnerCharacter != nullptr
+		&& OwnerCharacter == UGameplayStatics::GetPlayerCharacter(this,0))
 	{
 		ClickAssignedAbilities[0]->Target = OwnerCharacter->GetLastInteractableActor();
 	}
