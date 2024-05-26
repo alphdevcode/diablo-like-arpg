@@ -11,27 +11,16 @@ AAbility::AAbility()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// AAbility::AAbility(ACharacter* NewCaster)
-// {
-// 	this->Caster = NewCaster;
-// 	AAbility();
-// }
-//
-// AAbility::AAbility(ACharacter* NewCaster, AActor* NewTarget)
-// {
-// 	this->Target = NewTarget;
-// 	AAbility(NewCaster);
-// }
-
 void AAbility::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Currently we don't need to wait for the first frame
+	// Currently we wait for the next tick so properties are injected before calling Initialize 
 	GetWorldTimerManager().SetTimerForNextTick(this, &AAbility::Initialize);
 	// Initialize();
 }
 
+/** This is implemented in child classes */
 void AAbility::Initialize()
 {
 }

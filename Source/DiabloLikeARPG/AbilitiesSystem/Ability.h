@@ -16,8 +16,6 @@ class DIABLOLIKEARPG_API AAbility : public AActor
 
 public:
 	AAbility();
-	// AAbility(ACharacter* NewCaster);
-	// AAbility(ACharacter* NewCaster, AActor* NewTarget = nullptr);
 
 protected:
 	virtual void BeginPlay() override;
