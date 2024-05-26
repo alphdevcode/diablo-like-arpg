@@ -66,7 +66,7 @@ public:
 
 	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilityTargetting")
 	// FVector EffectsSpawnLocation;
-	//
+	
 	UFUNCTION(BlueprintPure)
 	UTexture2D* GetAbilityIcon() const { return AbilityIcon; }
 

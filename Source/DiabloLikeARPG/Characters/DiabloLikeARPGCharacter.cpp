@@ -5,6 +5,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "DiabloLikeARPG/DiabloLikeARPGPlayerController.h"
 #include "DiabloLikeARPG/StatsComponent.h"
 #include "DiabloLikeARPG/AbilitiesSystem/AbilitiesComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -61,7 +62,7 @@ void ADiabloLikeARPGCharacter::BeginPlay()
 	const FTimerDelegate CheckForInteractionsTimerDelegate =
 		FTimerDelegate::CreateUObject(this, &ADiabloLikeARPGCharacter::CheckForInteractions);
 
-	GetWorldTimerManager().SetTimer(InteractionTimerHandle, CheckForInteractionsTimerDelegate, .2f, true);
+	GetWorldTimerManager().SetTimer(InteractionTimerHandle, CheckForInteractionsTimerDelegate, .05f, true);
 }
 
 void ADiabloLikeARPGCharacter::Tick(float DeltaSeconds)
@@ -79,7 +80,7 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 	if (HitAnimMontage != nullptr)
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(HitAnimMontage, 1.f,
-			EMontagePlayReturnType::MontageLength, 0.f, false);
+		                                           EMontagePlayReturnType::MontageLength, 0.f, false);
 	}
 	StatsComponent->ReduceHealth(DamageToApply);
 
@@ -96,9 +97,9 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 		// UnPossessed();
 
 		const FName PelvisBone = "pelvis";
-		GetMesh()->SetAllBodiesBelowSimulatePhysics(PelvisBone,true,	true);
+		GetMesh()->SetAllBodiesBelowSimulatePhysics(PelvisBone, true, true);
 		GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(PelvisBone,
-			1.f,false,true);
+		                                               1.f, false, true);
 
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
@@ -106,7 +107,7 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 
 		// Destroy the character after 2 seconds
 		GetWorldTimerManager().SetTimer(DestroyActorTimerHandle, this,
-			&ADiabloLikeARPGCharacter::DestroyCharacter, 2.f, false);
+		                                &ADiabloLikeARPGCharacter::DestroyCharacter, 2.f, false);
 	}
 
 	return DamageToApply;
@@ -129,59 +130,78 @@ void ADiabloLikeARPGCharacter::CheckForInteractions()
 
 	if (DistanceToTarget <= GetInteractionRange())
 	{
-		CurrentInteractable->Interact(this);
-		if(CurrentInteractable != LastInteractable)
-		{
-			LastInteractable = CurrentInteractable;
-			if(GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue,
-					FString::Printf(TEXT("Updating Last Interactable from %s to %s"),
-						(LastInteractable != nullptr ? *LastInteractable->GetInteractableActor()->GetName() : TEXT("null")),
-						(CurrentInteractable != nullptr ? *CurrentInteractable->GetInteractableActor()->GetName() : TEXT("null"))));
-			}
-		}
 		GetController()->StopMovement();
+		CurrentInteractable->Interact(this);
+
 		CurrentInteractable = nullptr;
+	}
+	else
+	{
+		if (ADiabloLikeARPGPlayerController* PlayerController = Cast<ADiabloLikeARPGPlayerController>(GetController()))
+		{
+			PlayerController->ContinuouslyMoveToLocation(
+				CurrentInteractable->GetInteractableActor()->GetActorLocation());
+		}
 	}
 }
 
 void ADiabloLikeARPGCharacter::DestroyCharacter()
 {
 	const FVector MeshLocation = GetMesh()->GetBoneLocation("pelvis");
-	if(DestroyFX != nullptr)
+	if (DestroyFX != nullptr)
 	{
 		// play particle system
 		UGameplayStatics::SpawnEmitterAtLocation(this,
-			DestroyFX,
-			MeshLocation);
+		                                         DestroyFX,
+		                                         MeshLocation);
 	}
 
-	if(DestroySound != nullptr)
+	if (DestroySound != nullptr)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, DestroySound,
-			MeshLocation);
+		                                      MeshLocation);
 	}
 
-	
+
 	Destroy();
 	DestroyActorTimerHandle.Invalidate();
 }
 
-void ADiabloLikeARPGCharacter::SetInteractableTarget(IInteractableInterface* Interactable)
+void ADiabloLikeARPGCharacter::SetTargetInteractable(IInteractableInterface* Interactable)
 {
 	if (Interactable != nullptr)
 	{
-		CurrentInteractable = Interactable;
-		// LastInteractable = Interactable;
-	}else
-	{
-		if(GEngine)
+		if (TargetInteractable != Interactable)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
-				TEXT("Can not set InteractableTarget. Interactable is null"));
+			TargetInteractable = Interactable;
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue,
+				                                 FString::Printf(TEXT("Updating Target Interactable from %s to %s"),
+				                                                 (TargetInteractable != nullptr
+					                                                  ? *TargetInteractable->GetInteractableActor()->
+					                                                  GetName()
+					                                                  : TEXT("null")),
+				                                                 (Interactable != nullptr
+					                                                  ? *Interactable->GetInteractableActor()->
+					                                                  GetName()
+					                                                  : TEXT("null"))));
+			}
 		}
 	}
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
+			                                 TEXT("Can not set InteractableTarget. Interactable is null"));
+		}
+	}
+}
+
+void ADiabloLikeARPGCharacter::SetCurrentInteractable(IInteractableInterface* Interactable)
+{
+	CurrentInteractable = Interactable;
 }
 
 float ADiabloLikeARPGCharacter::GetInteractionRange()
@@ -192,15 +212,14 @@ float ADiabloLikeARPGCharacter::GetInteractionRange()
 
 void ADiabloLikeARPGCharacter::ActivatePrimaryAttackAbility() const
 {
-	// TODO: refactor to use the ability set in the AbilitiesComponent array at index 0
 	AbilitiesComponent->ActivatePrimaryAttackAbility();
 }
 
-AActor* ADiabloLikeARPGCharacter::GetLastInteractableActor()
+AActor* ADiabloLikeARPGCharacter::GetTargetInteractableActor() const
 {
-	if(LastInteractable == nullptr)
+	if (TargetInteractable == nullptr)
 	{
 		return nullptr;
 	}
-	return LastInteractable->GetInteractableActor();
+	return TargetInteractable->GetInteractableActor();
 }

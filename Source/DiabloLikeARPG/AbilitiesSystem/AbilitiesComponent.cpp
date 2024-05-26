@@ -72,10 +72,10 @@ void UAbilitiesComponent::ActivatePrimaryAttackAbility() const
 
 	ADiabloLikeARPGCharacter* OwnerCharacter = Cast<ADiabloLikeARPGCharacter>(GetOwner());
 
-	// Only assign the Target to the las interactable if we are the player
+	// Only assign the Target to the last interactable if we are the player
 	if(OwnerCharacter != nullptr
 		&& OwnerCharacter == UGameplayStatics::GetPlayerCharacter(this,0))
 	{
-		ClickAssignedAbilities[0]->Target = OwnerCharacter->GetLastInteractableActor();
+		ClickAssignedAbilities[0]->Target = OwnerCharacter->GetTargetInteractableActor();
 	}
 }

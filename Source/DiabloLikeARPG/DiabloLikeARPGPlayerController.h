@@ -70,8 +70,8 @@ protected:
 	/** Input handlers for SetDestination action. */
 	void OnInputStarted();
 	void MoveTo(const FVector& Destination) const;
-	void OnSetDestinationTriggered();
-	void OnSetDestinationReleased();
+	void OnClickTriggered();
+	void OnClickReleased();
 	void OnTouchTriggered();
 	void OnTouchReleased();
 
@@ -102,4 +102,6 @@ public:
 	// Rotate the pawn to look at the destination
 	UFUNCTION(BlueprintCallable)
 	void LookAtDestination(const FVector& Destination);
+	
+	void ContinuouslyMoveToLocation(const FVector& Location);
 };

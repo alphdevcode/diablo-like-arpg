@@ -49,11 +49,11 @@ void ADiabloLikeARPGPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this,
 		                                   &ADiabloLikeARPGPlayerController::OnInputStarted);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this,
-		                                   &ADiabloLikeARPGPlayerController::OnSetDestinationTriggered);
+		                                   &ADiabloLikeARPGPlayerController::OnClickTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this,
-		                                   &ADiabloLikeARPGPlayerController::OnSetDestinationReleased);
+		                                   &ADiabloLikeARPGPlayerController::OnClickReleased);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this,
-		                                   &ADiabloLikeARPGPlayerController::OnSetDestinationReleased);
+		                                   &ADiabloLikeARPGPlayerController::OnClickReleased);
 
 		// Setup touch input events
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this,
@@ -176,8 +176,7 @@ void ADiabloLikeARPGPlayerController::MoveTo(const FVector& Destination) const
 	ControlledCharacter->AddMovementInput(WorldDirection, 1.0, false);
 }
 
-// Triggered every frame when the input is held down
-void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
+void ADiabloLikeARPGPlayerController::OnClickTriggered()
 {
 	// We flag that the input is being pressed
 	FollowTime += GetWorld()->GetDeltaSeconds();
@@ -185,9 +184,8 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 	// We look for the location in the world where the player has pressed the input
 	FHitResult Hit;
 	bHitDamageableActor = true;
-	bool bHitSuccessful = false;
 	// Check if it hit any damageable actor
-	bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, true, Hit);
+	bool bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, true, Hit);
 
 	// if(GEngine && bHitSuccessful)
 	//  		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange,
@@ -203,7 +201,7 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 		//    "Hit Visibility");
 	}
 
-	// If we hit a surface, cache the location
+	// If we hit a surface or a damageable actor, cache the location
 	if (bHitSuccessful)
 	{
 		CachedDestination = Hit.Location;
@@ -213,7 +211,7 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 	{
 		// Invalidate current manual moving (if active), so player can move to hit damageable actor
 		bIsManualMoving = false;
-		
+
 		if (FVector::Dist(CachedDestination, ControlledCharacter->GetActorLocation())
 			<= ControlledCharacter->GetInteractionRange())
 		{
@@ -233,7 +231,12 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationTriggered()
 	}
 }
 
-void ADiabloLikeARPGPlayerController::OnSetDestinationReleased()
+void ADiabloLikeARPGPlayerController::ContinuouslyMoveToLocation(const FVector& Location)
+{
+	UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, Location);
+}
+
+void ADiabloLikeARPGPlayerController::OnClickReleased()
 {
 	// If it was a short press
 	if (FollowTime <= ShortPressThreshold)
@@ -243,7 +246,7 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationReleased()
 			return;
 		}
 		// We move there and spawn some particles
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+		ContinuouslyMoveToLocation(CachedDestination);
 		if(!bHitDamageableActor)
 		{
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator,
@@ -258,13 +261,13 @@ void ADiabloLikeARPGPlayerController::OnSetDestinationReleased()
 void ADiabloLikeARPGPlayerController::OnTouchTriggered()
 {
 	bIsTouch = true;
-	OnSetDestinationTriggered();
+	OnClickTriggered();
 }
 
 void ADiabloLikeARPGPlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
-	OnSetDestinationReleased();
+	OnClickReleased();
 }
 
 void ADiabloLikeARPGPlayerController::LookAtDestination(const FVector& Destination)

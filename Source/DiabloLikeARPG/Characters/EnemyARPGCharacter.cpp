@@ -1,6 +1,5 @@
 // Copyright 2024 AlphDevCode. All Rights Reserved.
 
-
 #include "EnemyARPGCharacter.h"
 
 #include "Components/WidgetComponent.h"
@@ -19,6 +18,12 @@ void AEnemyARPGCharacter::BeginPlay()
 
 	HealthBar->SetVisibility(false);
 }
+ 
+IInteractorInterface* AEnemyARPGCharacter::GetPlayerInteractor() const
+{
+	return Cast<IInteractorInterface>
+		(UGameplayStatics::GetPlayerCharacter(this, 0));
+}
 
 void AEnemyARPGCharacter::NotifyActorOnClicked(FKey ButtonPressed)
 {
@@ -29,11 +34,11 @@ void AEnemyARPGCharacter::NotifyActorOnClicked(FKey ButtonPressed)
 	// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("ENEMY CLICKED"));
 	// }
 
-	if (IInteractorInterface* Interactor = Cast<IInteractorInterface>
-		(UGameplayStatics::GetPlayerCharacter(this, 0)))
+	if (IInteractorInterface* PlayerInteractor = GetPlayerInteractor())
 	{
-		Interactor->SetInteractableTarget(Cast<IInteractableInterface>(this));
+		PlayerInteractor->SetCurrentInteractable(Cast<IInteractableInterface>(this));
 	}
+	// SetThisAsPlayerInteractableTarget();
 }
 
 void AEnemyARPGCharacter::NotifyActorBeginCursorOver()
@@ -41,6 +46,11 @@ void AEnemyARPGCharacter::NotifyActorBeginCursorOver()
 	Super::NotifyActorBeginCursorOver();
 	GetMesh()->SetOverlayMaterial(OverlayMaterial);
 	HealthBar->SetVisibility(true);
+
+	if (IInteractorInterface* PlayerInteractor = GetPlayerInteractor())
+	{
+		PlayerInteractor->SetTargetInteractable(Cast<IInteractableInterface>(this));
+	}
 }
 
 void AEnemyARPGCharacter::NotifyActorEndCursorOver()

@@ -20,7 +20,8 @@ public:
 
 protected:
 	void BeginPlay() override;
-	
+	IInteractorInterface* GetPlayerInteractor() const;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Overlay")
 	UMaterialInterface* OverlayMaterial;
 	

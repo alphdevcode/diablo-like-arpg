@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2024 AlphDevCode. All Rights Reserved.
 
 #pragma once
 
@@ -21,8 +21,10 @@ class DIABLOLIKEARPG_API IInteractorInterface
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void SetInteractableTarget(IInteractableInterface* Interactable);
+	/** Target Interactable would be the one that the player is planning to interact with e.g. hovering */
+	virtual void SetTargetInteractable(IInteractableInterface* Interactable);
+	/** Current Interactable would be the one that the player is currently interacting with e.g. clicking */
+	virtual void SetCurrentInteractable(IInteractableInterface* Interactable);
 	virtual float GetInteractionRange();
 };

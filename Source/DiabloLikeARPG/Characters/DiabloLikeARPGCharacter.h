@@ -53,8 +53,10 @@ private:
 	FTimerHandle DestroyActorTimerHandle;
 
 protected:
+	/** Set upon interaction, will be cleared after interaction finished **/
 	IInteractableInterface* CurrentInteractable;
-	IInteractableInterface* LastInteractable;
+	/** Set upon interaction, won't be cleared after interaction finished **/
+	IInteractableInterface* TargetInteractable;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UAnimMontage* HitAnimMontage;
@@ -70,10 +72,12 @@ protected:
 	void DestroyCharacter();
 
 public:
-	virtual void SetInteractableTarget(IInteractableInterface* Interactable) override;
 	virtual float GetInteractionRange() override;
+	virtual void SetTargetInteractable(IInteractableInterface* Interactable) override;
+
+	void SetCurrentInteractable(IInteractableInterface* Interactable);
 
 	void ActivatePrimaryAttackAbility() const;
 
-	AActor* GetLastInteractableActor();
+	AActor* GetTargetInteractableActor() const;
 };
