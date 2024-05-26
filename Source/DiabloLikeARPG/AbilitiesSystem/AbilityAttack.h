@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2024 AlphDevCode. All Rights Reserved.
 
 #pragma once
 
@@ -6,6 +6,7 @@
 #include "Ability.h"
 #include "AbilityAttack.generated.h"
 
+class UDiabloLikeARPGAnimInstance;
 /**
  * 
  */
@@ -13,5 +14,51 @@ UCLASS()
 class DIABLOLIKEARPG_API AAbilityAttack : public AAbility
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void BeginPlay() override;
+
+	virtual void Initialize() override;
+
+	UFUNCTION()
+	void AbilityActivated();
+	void HandleAttackCombo();
+
+	UFUNCTION()
+	void ComboAttackSave();
+
+	UFUNCTION()
+	void ResetCombo();
+
+	UFUNCTION()
+	void HandleAbilityEffectsSpawning();
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UParticleSystem* ImpactFX;
 	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TArray<UAnimMontage*> AttackAnimMontages;
+
+	UPROPERTY(BlueprintReadWrite)
+	UDiabloLikeARPGAnimInstance* AnimInstance;
+	
+	UPROPERTY(BlueprintReadWrite)
+	bool bSaveAttack = false;
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 AttackCount = 0;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsAttacking = false;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bShouldLookAtTarget;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	double MeleeSpeed = 1.2f;
+	
+	void RotateToFaceTarget();
+
+public:
+	virtual void Tick(float DeltaTime) override;
 };

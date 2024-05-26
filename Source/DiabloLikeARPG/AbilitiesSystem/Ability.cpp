@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright 2024 AlphDevCode. All Rights Reserved.
 
 #include "Ability.h"
 
@@ -7,22 +6,36 @@
 #include "../StatsComponent.h"
 #include "GameFramework/Character.h"
 
-// Sets default values
 AAbility::AAbility()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
+// AAbility::AAbility(ACharacter* NewCaster)
+// {
+// 	this->Caster = NewCaster;
+// 	AAbility();
+// }
+//
+// AAbility::AAbility(ACharacter* NewCaster, AActor* NewTarget)
+// {
+// 	this->Target = NewTarget;
+// 	AAbility(NewCaster);
+// }
+
 void AAbility::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ActivateAbility();
+	// Currently we don't need to wait for the first frame
+	GetWorldTimerManager().SetTimerForNextTick(this, &AAbility::Initialize);
+	// Initialize();
 }
 
-// Called every frame
+void AAbility::Initialize()
+{
+}
+
 void AAbility::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

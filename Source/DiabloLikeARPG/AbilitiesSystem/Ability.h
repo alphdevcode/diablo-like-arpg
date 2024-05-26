@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2024 AlphDevCode. All Rights Reserved.
 
 #pragma once
 
@@ -15,12 +15,14 @@ class DIABLOLIKEARPG_API AAbility : public AActor
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
 	AAbility();
+	// AAbility(ACharacter* NewCaster);
+	// AAbility(ACharacter* NewCaster, AActor* NewTarget = nullptr);
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void Initialize();
 
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	bool bAutoActivateAbilityEffects = false;
@@ -54,7 +56,6 @@ protected:
 	FVector EffectsSpawnLocation;
 
 public:
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilityTargetting")

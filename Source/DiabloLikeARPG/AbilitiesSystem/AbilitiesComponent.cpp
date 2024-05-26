@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2024 AlphDevCode. All Rights Reserved.
 
 
 #include "AbilitiesComponent.h"
@@ -7,16 +7,11 @@
 #include "DiabloLikeARPG/Characters/DiabloLikeARPGCharacter.h"
 #include "GameFramework/Character.h"
 
-// Sets default values for this component's properties
 UAbilitiesComponent::UAbilitiesComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-
-// Called when the game starts
 void UAbilitiesComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -33,13 +28,10 @@ void UAbilitiesComponent::BeginPlay()
 }
 
 
-// Called every frame
 void UAbilitiesComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                         FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
 void UAbilitiesComponent::AddAbility(const TSubclassOf<AAbility>& AbilityClass, TArray<AAbility*>& AbilitiesArray) const

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2024 AlphDevCode. All Rights Reserved.
 
 #pragma once
 
@@ -14,11 +14,9 @@ class DIABLOLIKEARPG_API UAbilitiesComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
 	UAbilitiesComponent();
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category="Abilities")
@@ -34,12 +32,12 @@ protected:
 	TArray<AAbility*> ClickAssignedAbilities;
 
 public:
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	void AddAbility(const TSubclassOf<AAbility>& AbilityClass,
 		TArray<AAbility*>& AbilitiesArray) const;
-	
+
+	UFUNCTION(BlueprintCallable)
 	void ActivatePrimaryAttackAbility() const;
 };
