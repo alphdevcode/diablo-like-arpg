@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2024 AlphDevCode. All Rights Reserved.
 
 #pragma once
 
@@ -18,14 +18,14 @@ public:
 	AAbilityEffect();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void OnActivate();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect", meta = (AllowPrivateAccess = "true"))
 	AAbility* ParentAbility;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void SetPatentAbility(AAbility* Ability);

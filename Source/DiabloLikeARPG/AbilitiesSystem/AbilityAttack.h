@@ -16,8 +16,6 @@ class DIABLOLIKEARPG_API AAbilityAttack : public AAbility
 	GENERATED_BODY()
 
 protected:
-	virtual void BeginPlay() override;
-
 	virtual void Initialize() override;
 
 	UFUNCTION()

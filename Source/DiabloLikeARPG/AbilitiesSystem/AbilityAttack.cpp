@@ -7,10 +7,6 @@
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 
-void AAbilityAttack::BeginPlay()
-{
-	Super::BeginPlay();
-}
 
 void AAbilityAttack::Initialize()
 {
