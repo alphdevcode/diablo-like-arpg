@@ -57,19 +57,8 @@ void AAbilityAttack::HandleAttackCombo()
 		return;
 	}
 
-	switch (AttackCount)
-	{
-	case 0:
-		AttackCount = 1;
-		break;
-	case 1:
-		AttackCount = 2;
-		break;
-	case 2:
-	default:
-		AttackCount = 0;
-		break;
-	}
+	// Set the attack count to the next attack in the combo, if it's the last one set it back to zero
+	AttackCount = (AttackCount + 1) % AttackAnimMontages.Num();
 }
 
 void AAbilityAttack::ComboAttackSave()
