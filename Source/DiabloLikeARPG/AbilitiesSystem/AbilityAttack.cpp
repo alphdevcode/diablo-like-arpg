@@ -21,7 +21,7 @@ void AAbilityAttack::Initialize()
 	if ((AnimInstance = Cast<UDiabloLikeARPGAnimInstance>(Caster->GetMesh()->GetAnimInstance())))
 	{
 		AnimInstance->OnAnimNotifySaveAttack.AddDynamic(this, &AAbilityAttack::ComboAttackSave);
-		AnimInstance->OnAnimNotifyResetCombo.AddDynamic(this, &AAbilityAttack::ResetCombo);
+		AnimInstance->OnAnimNotifyResetCombo.AddDynamic(this, &AAbilityAttack::ResetAbility);
 		AnimInstance->OnAnimNotifyAttackPeak.AddDynamic(this, &AAbilityAttack::HandleAbilityEffectsSpawning);
 	}
 }
@@ -53,7 +53,7 @@ void AAbilityAttack::HandleAttackCombo()
 		AttackCount = 0;
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-			                                 TEXT("AttackAnimMontages is not valid!"));
+			                                 TEXT("AttackAnimMontage is not valid!"));
 		return;
 	}
 
@@ -69,7 +69,7 @@ void AAbilityAttack::ComboAttackSave()
 	HandleAttackCombo();
 }
 
-void AAbilityAttack::ResetCombo()
+void AAbilityAttack::ResetAbility()
 {
 	AttackCount = 0;
 	bSaveAttack = false;

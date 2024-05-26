@@ -22,6 +22,8 @@ protected:
 
 	virtual void Initialize();
 
+	virtual void ResetAbility();
+
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	bool bAutoActivateAbilityEffects = false;
 	
@@ -56,13 +58,13 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilityTargetting")
+	UPROPERTY(BlueprintReadWrite, Category = "AbilityTargetting")
 	ACharacter* Caster;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilityTargetting")
+	UPROPERTY(BlueprintReadWrite, Category = "AbilityTargetting")
 	AActor* Target;
 
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilityTargetting")
+	// UPROPERTY(BlueprintReadWrite, Category = "AbilityTargetting")
 	// FVector EffectsSpawnLocation;
 	
 	UFUNCTION(BlueprintPure)

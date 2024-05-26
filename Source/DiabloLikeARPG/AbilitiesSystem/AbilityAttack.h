@@ -28,7 +28,7 @@ protected:
 	void ComboAttackSave();
 
 	UFUNCTION()
-	void ResetCombo();
+	virtual void ResetAbility() override;
 
 	UFUNCTION()
 	void HandleAbilityEffectsSpawning();

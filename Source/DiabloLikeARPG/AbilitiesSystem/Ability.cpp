@@ -20,8 +20,13 @@ void AAbility::BeginPlay()
 	// Initialize();
 }
 
-/** This is implemented in child classes */
+/** Initializes Ability specific properties and behavior. Should be implemented in child classes */
 void AAbility::Initialize()
+{
+}
+
+/** Reset Ability specific properties and behavior to their default state. Should be implemented in child classes */
+void AAbility::ResetAbility()
 {
 }
 

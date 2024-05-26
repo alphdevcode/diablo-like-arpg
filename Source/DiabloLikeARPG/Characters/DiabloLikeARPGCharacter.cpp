@@ -62,7 +62,7 @@ void ADiabloLikeARPGCharacter::BeginPlay()
 	const FTimerDelegate CheckForInteractionsTimerDelegate =
 		FTimerDelegate::CreateUObject(this, &ADiabloLikeARPGCharacter::CheckForInteractions);
 
-	GetWorldTimerManager().SetTimer(InteractionTimerHandle, CheckForInteractionsTimerDelegate, .05f, true);
+	GetWorldTimerManager().SetTimer(InteractionTimerHandle, CheckForInteractionsTimerDelegate, .2f, true);
 }
 
 void ADiabloLikeARPGCharacter::Tick(float DeltaSeconds)
