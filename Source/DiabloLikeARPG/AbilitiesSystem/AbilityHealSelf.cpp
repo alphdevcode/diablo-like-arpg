@@ -4,7 +4,6 @@
 #include "AbilityHealSelf.h"
 
 #include "GameFramework/Character.h"
-#include "Kismet/GameplayStatics.h"
 
 void AAbilityHealSelf::Initialize()
 {
@@ -24,15 +23,6 @@ void AAbilityHealSelf::AbilityActivated()
 		return;
 	}
 	Caster->PlayAnimMontage(HealAnimMontage);
-
-	if(HealFX == nullptr)
-	{
-		if(GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-				TEXT("HealFX is not valid!"));
-		return;
-	}
-	UGameplayStatics::SpawnEmitterAttached(HealFX, Caster->GetMesh(), "Chest");
 
 	SpawnAbilityEffects();
 }
