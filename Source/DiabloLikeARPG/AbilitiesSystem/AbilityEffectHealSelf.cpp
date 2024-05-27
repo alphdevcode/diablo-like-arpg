@@ -3,8 +3,8 @@
 
 #include "AbilityEffectHealSelf.h"
 
-#include "StatsComponent.h"
-#include "AbilitiesSystem/Ability.h"
+#include "Ability.h"
+#include "DiabloLikeARPG/StatsComponent.h"
 #include "GameFramework/Character.h"
 
 

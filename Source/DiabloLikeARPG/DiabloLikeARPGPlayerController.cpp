@@ -1,4 +1,5 @@
 #include "DiabloLikeARPGPlayerController.h"
+
 #include "GameFramework/Pawn.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraFunctionLibrary.h"
@@ -9,6 +10,7 @@
 #include "Characters/DiabloLikeARPGCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Utils/ActorFunctionLibrary.h"
 
 ADiabloLikeARPGPlayerController::ADiabloLikeARPGPlayerController()
 {
@@ -141,7 +143,7 @@ void ADiabloLikeARPGPlayerController::OnRootedStarted()
 
 void ADiabloLikeARPGPlayerController::OnRootedTriggered()
 {
-	LookAtDestination(CachedDestination);
+	UActorFunctionLibrary::LookAtDestination(ControlledCharacter, CachedDestination);
 }
 
 void ADiabloLikeARPGPlayerController::OnRootedReleased()
@@ -303,29 +305,4 @@ void ADiabloLikeARPGPlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
 	OnClickReleased();
-}
-
-void ADiabloLikeARPGPlayerController::LookAtDestination(const FVector& Destination)
-{
-	if (ControlledCharacter == nullptr)
-	{
-		UE_LOG(LogTemp, Error,
-		       TEXT("ADiabloLikeARPGPlayerController::LookAtDestination: ControlledCharacter is nullptr"));
-		return;
-	}
-
-	const FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(
-		ControlledCharacter->GetActorLocation(), Destination);
-
-	// if(GEngine)
-	// 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
-	// 		LookAtRotator.ToString());	
-
-	const FRotator InterpRotator = UKismetMathLibrary::RInterpTo(
-		ControlledCharacter->GetActorRotation(),
-		FRotator(0.f, LookAtRotator.Yaw, 0.f),
-		GetWorld()->GetDeltaSeconds(),
-		10.f);
-
-	ControlledCharacter->SetActorRotation(InterpRotator);
 }

@@ -2,8 +2,8 @@
 
 #include "AbilityAttack.h"
 
+#include "DiabloLikeARPG/Utils/ActorFunctionLibrary.h"
 #include "DiabloLikeARPG/DiabloLikeARPGAnimInstance.h"
-#include "DiabloLikeARPG/DiabloLikeARPGPlayerController.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -26,7 +26,7 @@ void AAbilityAttack::AbilityActivated()
 {
 	bShouldLookAtTarget = true;
 	if (bIsAttacking)
-	{  
+	{
 		bSaveAttack = true;
 	}
 	else
@@ -100,11 +100,7 @@ void AAbilityAttack::RotateToFaceTarget()
 {
 	if (Caster != nullptr && Target != nullptr)
 	{
-		if (ADiabloLikeARPGPlayerController* CasterController = Cast<ADiabloLikeARPGPlayerController>(
-			Caster->GetController()))
-		{
-			CasterController->LookAtDestination(Target->GetActorLocation());
-		}
+		UActorFunctionLibrary::LookAtDestination(Caster, Target->GetActorLocation());
 	}
 }
 

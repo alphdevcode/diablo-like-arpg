@@ -119,9 +119,5 @@ private:
 	float FollowTime; // For how long it has been pressed
 
 public:
-	// Rotate the pawn to look at the destination
-	UFUNCTION(BlueprintCallable)
-	void LookAtDestination(const FVector& Destination);
-	
 	void ContinuouslyMoveToLocation(const FVector& Location);
 };
