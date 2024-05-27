@@ -1,9 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2024 AlphDevCode. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "EnemyAIController.generated.h"
 
 /**
@@ -13,17 +14,25 @@ UCLASS()
 class DIABLOLIKEARPG_API AEnemyAIController : public AAIController
 {
 	GENERATED_BODY()
+public:
+	AEnemyAIController();
+	
 protected:
-	// Called when the game starts or when spawned
+	UFUNCTION()
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI")
+	class UAIPerceptionComponent* AIPerceptionComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI")
+	class UAIPerceptionStimuliSourceComponent* AIPerceptionStimuliSourceComponent;
+
 private:
-	void FindPawn(const APawn* TargetPawn);
-
-	UPROPERTY(EditAnywhere)
-	float FindPawnTimerRate = .5f;
-
 	UPROPERTY(EditAnywhere)
 	class UBehaviorTree* AIBehavior; 
-	
+
+	const FName TargetEnemyKey = "TargetEnemy";
 };

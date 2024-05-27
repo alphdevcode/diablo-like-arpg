@@ -7,6 +7,7 @@
 #include "DiabloLikeARPG/InteractionSystem/InteractableInterface.h"
 #include "EnemyARPGCharacter.generated.h"
 
+class UAIPerceptionComponent;
 class UWidgetComponent;
 /**
  * 
@@ -18,14 +19,26 @@ class DIABLOLIKEARPG_API AEnemyARPGCharacter : public ADiabloLikeARPGCharacter, 
 public:
 	AEnemyARPGCharacter();
 
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
+							 AController* EventInstigator, AActor* DamageCauser) override;
+
+
 protected:
 	void BeginPlay() override;
+	
 	IInteractorInterface* GetPlayerInteractor() const;
 
+	UFUNCTION(BlueprintCallable, Category="Abilities")
+	void Attack();
+
+	/** The radius in which the enemy can interact with actors (e.g. attack the player) */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Interaction")
+	float InteractionRadius = 100.f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Overlay")
 	UMaterialInterface* OverlayMaterial;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Health")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Health")
 	UWidgetComponent* HealthBar;
 
 public:

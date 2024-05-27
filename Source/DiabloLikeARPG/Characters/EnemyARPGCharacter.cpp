@@ -3,13 +3,27 @@
 #include "EnemyARPGCharacter.h"
 
 #include "Components/WidgetComponent.h"
+#include "DiabloLikeARPG/AbilitiesSystem/AbilitiesComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Perception/AISense_Damage.h"
 
 AEnemyARPGCharacter::AEnemyARPGCharacter()
 {
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
 	HealthBar->SetupAttachment(RootComponent);
 	HealthBar->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
+}
+
+float AEnemyARPGCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	// Broadcast a report damage event for the AI Perception System
+	UAISense_Damage::ReportDamageEvent(this, this, DamageCauser, Damage,
+		GetActorLocation(), GetActorLocation());
+
+	return Damage;
 }
 
 void AEnemyARPGCharacter::BeginPlay()
@@ -23,6 +37,11 @@ IInteractorInterface* AEnemyARPGCharacter::GetPlayerInteractor() const
 {
 	return Cast<IInteractorInterface>
 		(UGameplayStatics::GetPlayerCharacter(this, 0));
+}
+
+void AEnemyARPGCharacter::Attack()
+{
+	AbilitiesComponent->ActivatePrimaryAttackAbility();
 }
 
 void AEnemyARPGCharacter::NotifyActorOnClicked(FKey ButtonPressed)

@@ -85,7 +85,7 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
                                            AActor* DamageCauser)
 {
 	const float DamageToApply = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-
+	
 	// DamageToApply = FMath::Min(Health, DamageToApply);
 
 	if (HitAnimMontage != nullptr)
