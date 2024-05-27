@@ -89,7 +89,10 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 	
 	// DamageToApply = FMath::Min(Health, DamageToApply);
 
-	if (HitAnimMontage != nullptr)
+	// If we have a valid HitAnimMontage, and we're currently not playing any other animation montage
+	if (const UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		HitAnimMontage != nullptr && AnimInstance != nullptr
+		&& !AnimInstance->Montage_IsPlaying(nullptr))
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(HitAnimMontage, 1.f,
 		                                           EMontagePlayReturnType::MontageLength, 0.f, false);
