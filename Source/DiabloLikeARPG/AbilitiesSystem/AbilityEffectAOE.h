@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitiesSystem/AbilityEffect.h"
+#include "AbilityEffect.h"
 #include "AbilityEffectAOE.generated.h"
 
 /**
