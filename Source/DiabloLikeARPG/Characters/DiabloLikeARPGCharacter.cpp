@@ -59,10 +59,14 @@ void ADiabloLikeARPGCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	const FTimerDelegate CheckForInteractionsTimerDelegate =
-		FTimerDelegate::CreateUObject(this, &ADiabloLikeARPGCharacter::CheckForInteractions);
+	// Currently we only check for interactions if we're a player controlled character
+	if (Cast<ADiabloLikeARPGPlayerController>(GetController()))
+	{
+		const FTimerDelegate CheckForInteractionsTimerDelegate =
+			FTimerDelegate::CreateUObject(this, &ADiabloLikeARPGCharacter::CheckForInteractions);
 
-	GetWorldTimerManager().SetTimer(InteractionTimerHandle, CheckForInteractionsTimerDelegate, .2f, true);
+		GetWorldTimerManager().SetTimer(InteractionTimerHandle, CheckForInteractionsTimerDelegate, .2f, true);
+	}
 }
 
 void ADiabloLikeARPGCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
