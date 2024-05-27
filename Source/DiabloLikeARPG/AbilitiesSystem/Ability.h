@@ -20,7 +20,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
 	virtual void Initialize();
+	UFUNCTION()
+	virtual void AbilityActivated();
 	
 	UPROPERTY(BlueprintReadWrite)
 	class UDiabloLikeARPGAnimInstance* CasterAnimInstance;

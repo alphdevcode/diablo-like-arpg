@@ -9,9 +9,6 @@
 void AAbilityAOE::Initialize()
 {
 	Super::Initialize();
-
-	OnAbilityActivated.AddDynamic(this, &AAbilityAOE::AbilityActivated);
-
 }
 
 void AAbilityAOE::AbilityActivated()

@@ -8,9 +8,6 @@
 void AAbilityHealSelf::Initialize()
 {
 	Super::Initialize();
-
-	//TODO: Move this binding to Ability parent class
-	OnAbilityActivated.AddDynamic(this, &AAbilityHealSelf::AbilityActivated);
 }
 
 void AAbilityHealSelf::AbilityActivated()

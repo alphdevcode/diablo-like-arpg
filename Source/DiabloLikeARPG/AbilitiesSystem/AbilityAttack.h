@@ -17,9 +17,8 @@ class DIABLOLIKEARPG_API AAbilityAttack : public AAbility
 
 protected:
 	virtual void Initialize() override;
+	virtual void AbilityActivated() override;
 
-	UFUNCTION()
-	void AbilityActivated();
 	void HandleAttackCombo();
 
 	UFUNCTION()

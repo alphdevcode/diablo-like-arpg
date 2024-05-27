@@ -22,10 +22,16 @@ void AAbility::BeginPlay()
 	// Initialize();
 }
 
-/** Initializes Ability specific properties and behavior. Should be implemented in child classes */
+/** Initializes Ability specific properties and behaviors. Should be implemented in child classes */
 void AAbility::Initialize()
 {
 	CasterAnimInstance = Cast<UDiabloLikeARPGAnimInstance>(Caster->GetMesh()->GetAnimInstance());
+	OnAbilityActivated.AddDynamic(this, &AAbility::AbilityActivated);
+}
+
+/** Triggered when the ability is activated. Should be implemented in child classes */
+void AAbility::AbilityActivated()
+{
 }
 
 /** Reset Ability specific properties and behavior to their default state. Should be implemented in child classes */

@@ -16,9 +16,7 @@ class DIABLOLIKEARPG_API AAbilityAOE : public AAbility
 
 protected:
 	virtual void Initialize() override;
-
-	UFUNCTION()
-	void AbilityActivated();
+	virtual void AbilityActivated() override;
 
 	UFUNCTION()
 	void HandleAbilityEffectsSpawning();

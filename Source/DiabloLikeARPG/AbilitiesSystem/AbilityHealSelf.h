@@ -16,9 +16,7 @@ class DIABLOLIKEARPG_API AAbilityHealSelf : public AAbility
 
 protected:
 	virtual void Initialize() override;
-
-	UFUNCTION()
-	void AbilityActivated();
+	virtual void AbilityActivated() override;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	UParticleSystem* HealFX;

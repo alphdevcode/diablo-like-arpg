@@ -12,8 +12,6 @@ void AAbilityAttack::Initialize()
 {
 	Super::Initialize();
 
-	OnAbilityActivated.AddDynamic(this, &AAbilityAttack::AbilityActivated);
-
 	if (CasterAnimInstance != nullptr)
 	{
 		CasterAnimInstance->OnAnimNotifySaveAttack.AddDynamic(this, &AAbilityAttack::ComboAttackSave);
