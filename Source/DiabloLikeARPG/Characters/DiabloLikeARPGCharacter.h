@@ -20,7 +20,8 @@ public:
 
 	virtual void BeginPlay() override;
 
-	// Called every frame.
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 	virtual void Tick(float DeltaSeconds) override;
 	
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,

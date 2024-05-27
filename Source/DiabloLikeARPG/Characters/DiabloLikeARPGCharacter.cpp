@@ -65,6 +65,13 @@ void ADiabloLikeARPGCharacter::BeginPlay()
 	GetWorldTimerManager().SetTimer(InteractionTimerHandle, CheckForInteractionsTimerDelegate, .2f, true);
 }
 
+void ADiabloLikeARPGCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	InteractionTimerHandle.Invalidate();
+}
+
 void ADiabloLikeARPGCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
@@ -163,8 +170,8 @@ void ADiabloLikeARPGCharacter::DestroyCharacter()
 	}
 
 
-	Destroy();
 	DestroyActorTimerHandle.Invalidate();
+	Destroy();
 }
 
 void ADiabloLikeARPGCharacter::SetTargetInteractable(IInteractableInterface* Interactable)
