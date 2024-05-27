@@ -28,7 +28,7 @@ void AAbilityEffect::Tick(float DeltaTime)
 
 }
 
-void AAbilityEffect::SetPatentAbility(AAbility* Ability)
+void AAbilityEffect::SetParentAbility(AAbility* Ability)
 {
 	ParentAbility = Ability;
 }

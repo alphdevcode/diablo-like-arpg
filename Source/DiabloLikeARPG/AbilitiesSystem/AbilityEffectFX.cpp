@@ -21,6 +21,13 @@ void AAbilityEffectFX::BeginPlay()
 
 	if (bShouldAttachToCaster)
 	{
+		if(ParentAbility->Caster == nullptr)
+		{
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
+				                                 TEXT("Can't activate attached AbilityEffectFX, Caster is not valid!"));
+			return;
+		}
 		UGameplayStatics::SpawnEmitterAttached(AbilityFX, ParentAbility->Caster->GetMesh(),
 		                                       AttachPointName);
 	}
