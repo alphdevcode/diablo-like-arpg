@@ -73,6 +73,7 @@ void ADiabloLikeARPGCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
+	DestroyActorTimerHandle.Invalidate();
 	InteractionTimerHandle.Invalidate();
 }
 
@@ -137,9 +138,9 @@ void ADiabloLikeARPGCharacter::CheckForInteractions()
 
 	// if (GEngine)
 	// 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green,
-	// 	FString::Printf(TEXT("Distance: %f"), DistanceToTarget));
+	// 	TEXT("Distance: %f"), DistanceToTarget);
 
-	if (DistanceToTarget <= GetInteractionRange())
+	if (DistanceToTarget <= GetInteractionRange() && GetController())
 	{
 		GetController()->StopMovement();
 		CurrentInteractable->Interact(this);
@@ -217,7 +218,7 @@ void ADiabloLikeARPGCharacter::SetCurrentInteractable(IInteractableInterface* In
 
 float ADiabloLikeARPGCharacter::GetInteractionRange()
 {
-	// TODO: Implement a way to get the interaction range from the Active Ability
+	// TODO: Implement a way to get the interaction range based on the interactable
 	return 200.f;
 }
 

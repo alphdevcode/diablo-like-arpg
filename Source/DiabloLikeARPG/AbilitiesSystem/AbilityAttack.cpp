@@ -14,11 +14,10 @@ void AAbilityAttack::Initialize()
 
 	OnAbilityActivated.AddDynamic(this, &AAbilityAttack::AbilityActivated);
 
-	if ((AnimInstance = Cast<UDiabloLikeARPGAnimInstance>(Caster->GetMesh()->GetAnimInstance())))
+	if (CasterAnimInstance != nullptr)
 	{
-		AnimInstance->OnAnimNotifySaveAttack.AddDynamic(this, &AAbilityAttack::ComboAttackSave);
-		AnimInstance->OnAnimNotifyResetCombo.AddDynamic(this, &AAbilityAttack::ResetAbility);
-		AnimInstance->OnAnimNotifyAttackPeak.AddDynamic(this, &AAbilityAttack::HandleAbilityEffectsSpawning);
+		CasterAnimInstance->OnAnimNotifySaveAttack.AddDynamic(this, &AAbilityAttack::ComboAttackSave);
+		CasterAnimInstance->OnAnimNotifyResetCombo.AddDynamic(this, &AAbilityAttack::ResetAbility);
 	}
 }
 
@@ -41,12 +40,14 @@ void AAbilityAttack::HandleAttackCombo()
 	if (AttackAnimMontages.IsValidIndex(AttackCount))
 	{
 		Caster->PlayAnimMontage(AttackAnimMontages[AttackCount], MeleeSpeed);
+		if (CasterAnimInstance != nullptr)
+		{
+			CasterAnimInstance->OnAnimNotifyAttackPeak.AddDynamic(this, &AAbilityAttack::HandleAbilityEffectsSpawning);
+		}
 	}
 	else
 	{
-		bShouldLookAtTarget = false;
-		bIsAttacking = false;
-		AttackCount = 0;
+		ResetAbility();
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
 			                                 TEXT("AttackAnimMontage is not valid!"));
@@ -85,6 +86,7 @@ void AAbilityAttack::HandleAbilityEffectsSpawning()
 			                                         TargetCharacter->GetMesh()->GetSocketLocation("Impact"));
 		}
 		SpawnAbilityEffects();
+		CasterAnimInstance->OnAnimNotifyAttackPeak.RemoveDynamic(this, &AAbilityAttack::HandleAbilityEffectsSpawning);
 	}
 	else
 	{

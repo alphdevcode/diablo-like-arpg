@@ -36,9 +36,6 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	TArray<UAnimMontage*> AttackAnimMontages;
-
-	UPROPERTY(BlueprintReadWrite)
-	UDiabloLikeARPGAnimInstance* AnimInstance;
 	
 	UPROPERTY(BlueprintReadWrite)
 	bool bSaveAttack = false;

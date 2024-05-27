@@ -147,7 +147,7 @@ void UStatsComponent::ReduceHealth(const float Amount)
 		Health = 0.f;
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 2.f,
-			                                 FColor::Red, TEXT("You are dead."));
+			                                 FColor::Red, TEXT("Character just died."));
 	}
 	if (OnHealthChanged.IsBound())
 	{

@@ -22,6 +22,9 @@ protected:
 
 	virtual void Initialize();
 	
+	UPROPERTY(BlueprintReadWrite)
+	class UDiabloLikeARPGAnimInstance* CasterAnimInstance;
+	
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	bool bAutoActivateAbilityEffects = false;
 	
@@ -31,8 +34,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	float Range = 100.f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
-	bool bIsActive = false;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	// bool bIsActive = false;
 
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	float Cooldown = 0.5f;
@@ -77,14 +80,17 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool CanActivateAbility() const;
 
+	// Note we can't overload a UFUNCTION
 	UFUNCTION(BlueprintCallable)
 	void SpawnAbilityEffects();
+	UFUNCTION(BlueprintCallable)
+	void SpawnAbilityEffectsWithLocation(const FVector& SpawnLocation);
 
 	// UFUNCTION(BlueprintPure)
 	// bool IsActive() const;
 	
 	UFUNCTION(BlueprintCallable)
-	void ActivateAbility(const FVector& EffectsSpawnLocation);
+	void ActivateAbility(const FVector& NewEffectsSpawnLocation);
 
 	virtual void ResetAbility();
 	

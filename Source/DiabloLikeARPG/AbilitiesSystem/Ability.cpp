@@ -4,6 +4,7 @@
 
 #include "AbilityEffect.h"
 #include "../StatsComponent.h"
+#include "DiabloLikeARPG/DiabloLikeARPGAnimInstance.h"
 #include "GameFramework/Character.h"
 
 AAbility::AAbility()
@@ -14,7 +15,7 @@ AAbility::AAbility()
 void AAbility::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	// Currently we wait for the next tick so properties are injected before calling Initialize
 	// TODO: Consider using SpawnActorDeferred https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/Engine/UWorld/SpawnActorDeferred?application_version=5.3
 	GetWorldTimerManager().SetTimerForNextTick(this, &AAbility::Initialize);
@@ -24,6 +25,7 @@ void AAbility::BeginPlay()
 /** Initializes Ability specific properties and behavior. Should be implemented in child classes */
 void AAbility::Initialize()
 {
+	CasterAnimInstance = Cast<UDiabloLikeARPGAnimInstance>(Caster->GetMesh()->GetAnimInstance());
 }
 
 /** Reset Ability specific properties and behavior to their default state. Should be implemented in child classes */
@@ -62,12 +64,17 @@ bool AAbility::CanActivateAbility() const
 
 void AAbility::SpawnAbilityEffects()
 {
+	SpawnAbilityEffectsWithLocation(EffectsSpawnLocation);
+}
+
+void AAbility::SpawnAbilityEffectsWithLocation(const FVector& SpawnLocation)
+{
 	for (TSubclassOf<AAbilityEffect> Effect : Effects)
 	{
 		if (Effect.GetDefaultObject() != nullptr && Caster != nullptr)
 		{
 			AAbilityEffect* AbilityEffect = GetWorld()->
-				SpawnActor<AAbilityEffect>(Effect, EffectsSpawnLocation, FRotator::ZeroRotator);
+				SpawnActor<AAbilityEffect>(Effect, SpawnLocation, FRotator::ZeroRotator);
 			AbilityEffect->SetOwner(Caster);
 			AbilityEffect->SetPatentAbility(this);
 		}
