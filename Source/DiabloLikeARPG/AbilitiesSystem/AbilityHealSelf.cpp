@@ -12,6 +12,8 @@ void AAbilityHealSelf::Initialize()
 
 void AAbilityHealSelf::AbilityActivated()
 {
+	Super::AbilityActivated();
+	
 	if(HealAnimMontage == nullptr)
 	{
 		if(GEngine)

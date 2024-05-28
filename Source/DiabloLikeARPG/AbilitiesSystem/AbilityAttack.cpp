@@ -21,6 +21,8 @@ void AAbilityAttack::Initialize()
 
 void AAbilityAttack::AbilityActivated()
 {
+	Super::AbilityActivated();
+	
 	bShouldLookAtTarget = true;
 	if (bIsAttacking)
 	{

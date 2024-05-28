@@ -13,6 +13,8 @@ void AAbilityAOE::Initialize()
 
 void AAbilityAOE::AbilityActivated()
 {
+	Super::AbilityActivated();
+
 	if(AbilityAnimMontage == nullptr)
 	{
 		if(GEngine)
