@@ -15,15 +15,6 @@ void AAbilityAOE::AbilityActivated()
 {
 	Super::AbilityActivated();
 
-	if(AbilityAnimMontage == nullptr)
-	{
-		if(GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-				TEXT("AbilityAnimMontage is not valid!"));
-		return;
-	}
-	Caster->PlayAnimMontage(AbilityAnimMontage);
-
 	CasterAnimInstance->OnAnimNotifyAttackPeak
 		.AddDynamic(this, &AAbilityAOE::HandleAbilityEffectsSpawning);
 }

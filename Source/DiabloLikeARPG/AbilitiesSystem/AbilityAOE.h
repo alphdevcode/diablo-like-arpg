@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ability.h"
+#include "AbilityWithSingleAnimationBase.h"
 #include "AbilityAOE.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DIABLOLIKEARPG_API AAbilityAOE : public AAbility
+class DIABLOLIKEARPG_API AAbilityAOE : public AAbilityWithSingleAnimationBase
 {
 	GENERATED_BODY()
 
@@ -20,9 +20,6 @@ protected:
 
 	UFUNCTION()
 	void HandleAbilityEffectsSpawning();
-	
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UAnimMontage* AbilityAnimMontage;
 
 private:
 	const FName AbilityEffectsSocket = FName("FX_Sword_Top");

@@ -3,24 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ability.h"
+#include "AbilityWithSingleAnimationBase.h"
 #include "AbilityHealSelf.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DIABLOLIKEARPG_API AAbilityHealSelf : public AAbility
+class DIABLOLIKEARPG_API AAbilityHealSelf : public AAbilityWithSingleAnimationBase
 {
 	GENERATED_BODY()
 
 protected:
 	virtual void Initialize() override;
 	virtual void AbilityActivated() override;
-
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UParticleSystem* HealFX;
-	
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UAnimMontage* HealAnimMontage;
 };
