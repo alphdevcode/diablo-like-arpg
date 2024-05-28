@@ -68,6 +68,11 @@ bool AAbility::CanActivateAbility() const
 	return false;
 }
 
+float AAbility::GetRemainingCooldown() const
+{
+	return RemainingCooldown;
+}
+
 void AAbility::SpawnAbilityEffects()
 {
 	SpawnAbilityEffectsWithLocation(EffectsSpawnLocation);

@@ -83,6 +83,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool CanActivateAbility() const;
 
+	UFUNCTION(BlueprintPure)
+	float GetRemainingCooldown() const;
+
 	// Note we can't overload a UFUNCTION
 	UFUNCTION(BlueprintCallable)
 	void SpawnAbilityEffects();
