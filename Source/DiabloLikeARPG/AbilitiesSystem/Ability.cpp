@@ -89,7 +89,7 @@ void AAbility::SpawnAbilityEffectsWithLocation(const FVector& SpawnLocation)
 	{
 		if (Effect.GetDefaultObject() != nullptr && Caster != nullptr)
 		{
-			const FTransform SpawnTransform = FTransform(SpawnLocation);
+			const FTransform SpawnTransform = FTransform(Caster->GetActorRotation(),SpawnLocation);
 			AAbilityEffect* AbilityEffect = GetWorld()->
 				SpawnActorDeferred<AAbilityEffect>(Effect, SpawnTransform);
 			AbilityEffect->SetOwner(Caster);

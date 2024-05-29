@@ -5,6 +5,7 @@
 
 #include "DiabloLikeARPG/DiabloLikeARPGAnimInstance.h"
 #include "DiabloLikeARPG/Characters/DiabloLikeARPGCharacter.h"
+#include "DiabloLikeARPG/Utils/ActorFunctionLibrary.h"
 #include "GameFramework/Character.h"
 
 void AAbilityRangedProjectile::Initialize()
@@ -23,14 +24,42 @@ void AAbilityRangedProjectile::BeforeActivateAbility()
 void AAbilityRangedProjectile::AbilityActivated()
 {
 	Super::AbilityActivated();
+	bShouldLookAtTarget = true;
 
 	CasterAnimInstance->OnAnimNotifyAttackPeak
 		.AddDynamic(this, &AAbilityRangedProjectile::HandleAbilityEffectsSpawning);
 }
 
+void AAbilityRangedProjectile::ResetAbility()
+{
+	Super::ResetAbility();
+
+	bShouldLookAtTarget = false;
+}
+
 void AAbilityRangedProjectile::HandleAbilityEffectsSpawning()
 {
 	SpawnAbilityEffectsWithLocation(Caster->GetMesh()->GetSocketLocation(AbilityEffectsSocket));
+
+	ResetAbility();
 	CasterAnimInstance->OnAnimNotifyAttackPeak
 		.RemoveDynamic(this, &AAbilityRangedProjectile::HandleAbilityEffectsSpawning);
+}
+
+void AAbilityRangedProjectile::RotateToFaceTarget()
+{
+	if (Caster != nullptr && Target != nullptr)
+	{
+		UActorFunctionLibrary::LookAtDestination(Caster, Target->GetActorLocation(), 15.f);
+	}
+}
+
+void AAbilityRangedProjectile::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (bShouldLookAtTarget)
+	{
+		RotateToFaceTarget();
+	}
 }

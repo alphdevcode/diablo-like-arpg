@@ -5,7 +5,7 @@
 
 #include "Kismet/KismetMathLibrary.h"
 
-void UActorFunctionLibrary::LookAtDestination(AActor* Actor, const FVector& Destination)
+void UActorFunctionLibrary::LookAtDestination(AActor* Actor, const FVector& Destination, const float InterpSpeed)
 {
 	if (Actor == nullptr)
 	{
@@ -22,7 +22,7 @@ void UActorFunctionLibrary::LookAtDestination(AActor* Actor, const FVector& Dest
 		Actor->GetActorRotation(),
 		FRotator(0.f, LookAtRotator.Yaw, 0.f),
 		Actor->GetWorld()->GetDeltaSeconds(),
-		10.f);
+		InterpSpeed);
 
 	Actor->SetActorRotation(InterpRotator);
 }

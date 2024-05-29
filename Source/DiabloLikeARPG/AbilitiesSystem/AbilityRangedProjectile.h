@@ -20,9 +20,19 @@ protected:
 	virtual void AbilityActivated() override;
 
 	UFUNCTION()
+	virtual void ResetAbility() override;
+	
+	UFUNCTION()
 	void HandleAbilityEffectsSpawning();
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bShouldLookAtTarget;
 
 private:
 	const FName AbilityEffectsSocket = FName("FX_Sword_Bottom");
+
+	void RotateToFaceTarget();
 	
+public:
+	virtual void Tick(float DeltaTime) override;
 };
