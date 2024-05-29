@@ -29,6 +29,11 @@ void AAbility::Initialize()
 	OnAbilityActivated.AddDynamic(this, &AAbility::AbilityActivated);
 }
 
+/** Triggered before the ability is activated. Should be implemented in child classes */
+void AAbility::BeforeActivateAbility()
+{
+}
+
 /** Triggered when the ability is activated. Should be implemented in child classes */
 void AAbility::AbilityActivated()
 {
@@ -111,6 +116,7 @@ void AAbility::ActivateAbility(const FVector& NewEffectsSpawnLocation)
 	// 	return;
 	// }
 	// bIsActive = true;
+	BeforeActivateAbility();
 	RemainingCooldown = Cooldown;
 	OnAbilityActivated.Broadcast();
 

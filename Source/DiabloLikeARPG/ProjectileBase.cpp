@@ -52,6 +52,15 @@ void AProjectileBase::BeginPlay()
 	RotateToTarget();
 }
 
+void AProjectileBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	if(BoxComponent != nullptr)
+	{
+		BoxComponent->OnComponentHit.RemoveDynamic(this, &AProjectileBase::OnHit);
+	}
+}
+
 void AProjectileBase::RotateToTarget()
 {
 	if(Target != nullptr)

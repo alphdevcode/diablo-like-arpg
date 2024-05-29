@@ -23,6 +23,8 @@ protected:
 	UFUNCTION()
 	virtual void Initialize();
 	UFUNCTION()
+	virtual void BeforeActivateAbility();
+	UFUNCTION()
 	virtual void AbilityActivated();
 	
 	UPROPERTY(BlueprintReadWrite)

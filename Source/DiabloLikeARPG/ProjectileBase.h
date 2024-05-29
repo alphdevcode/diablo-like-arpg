@@ -21,6 +21,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -47,26 +48,27 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Sound", meta = (AllowPrivateAccess = "true"))
 	USoundBase* ImpactSound;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true"))
-	float InitialSpeed = 500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
+	float InitialSpeed = 1000.f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true"))
-	float MaxSpeed = 500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
+	float MaxSpeed = 1000.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true"))
-	float GravityScale = 500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
+	float GravityScale = 0.f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
 	float Damage = 10.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targetting", meta = (AllowPrivateAccess = "true"))
-	AActor* Target;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true"))
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
 	bool bIsHomingTarget = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true", EditCondition = "bIsHomingTarget == true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true, EditCondition = "bIsHomingTarget == true"))
 	float HomingAccelerationMagnitude = 2000.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targetting", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
+	AActor* Target;
+
 
 private:
 	void RotateToTarget();
