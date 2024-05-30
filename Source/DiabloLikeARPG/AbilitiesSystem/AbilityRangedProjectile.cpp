@@ -7,6 +7,7 @@
 #include "DiabloLikeARPG/Characters/DiabloLikeARPGCharacter.h"
 #include "DiabloLikeARPG/Utils/ActorFunctionLibrary.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 
 void AAbilityRangedProjectile::Initialize()
 {
@@ -15,7 +16,9 @@ void AAbilityRangedProjectile::Initialize()
 
 void AAbilityRangedProjectile::BeforeActivateAbility()
 {
-	if(const ADiabloLikeARPGCharacter* Character = Cast<ADiabloLikeARPGCharacter>(Caster); Character != nullptr)
+	// Only assign the target to last interactable for the player
+	if(const ADiabloLikeARPGCharacter* Character = Cast<ADiabloLikeARPGCharacter>(Caster); Character != nullptr
+		&& Character == UGameplayStatics::GetPlayerCharacter(this, 0))
 	{
 		Target = Character->GetTargetInteractableActor();
 	}

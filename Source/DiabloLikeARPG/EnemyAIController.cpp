@@ -3,6 +3,7 @@
 
 #include "EnemyAIController.h"
 
+#include "AbilitiesSystem/AbilitiesComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Characters/DiabloLikeARPGCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -26,12 +27,21 @@ void AEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (AIBehavior)
+	ControlledCharacter = Cast<ADiabloLikeARPGCharacter>(GetCharacter());
+
+	if (AIBehavior != nullptr)
 	{
 		RunBehaviorTree(AIBehavior);
 	}
 
-	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
+	if (Blackboard)
+	{
+		if (ControlledCharacter != nullptr)
+			Blackboard->SetValueAsFloat(IdealRangeKey, GetIdealRange());
+	}
+
+	AIPerceptionComponent->OnTargetPerceptionUpdated
+		.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
 }
 
 void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
@@ -39,16 +49,27 @@ void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus St
 	const ADiabloLikeARPGCharacter* PerceivedCharacter = Cast<ADiabloLikeARPGCharacter>(Actor);
 	const APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 
-    if (PerceivedCharacter && PerceivedCharacter->GetController() == PlayerController && Stimulus.WasSuccessfullySensed())
-    {
-	    const TSubclassOf<UAISense> SenseClass =
-	    	UAIPerceptionSystem::GetSenseClassForStimulus(this, Stimulus);
-        if (SenseClass == UAISense_Sight::StaticClass() || SenseClass == UAISense_Damage::StaticClass())
-        {
-            if(Blackboard)
-            {
-                Blackboard->SetValueAsObject(TargetEnemyKey, Actor);
-            }
-        }
-    }
+	if (PerceivedCharacter && PerceivedCharacter->GetController() == PlayerController && Stimulus.
+		WasSuccessfullySensed())
+	{
+		const TSubclassOf<UAISense> SenseClass =
+			UAIPerceptionSystem::GetSenseClassForStimulus(this, Stimulus);
+		if (SenseClass == UAISense_Sight::StaticClass() || SenseClass == UAISense_Damage::StaticClass())
+		{
+			if (Blackboard != nullptr)
+			{
+				Blackboard->SetValueAsObject(TargetEnemyKey, Actor);
+			}
+		}
+	}
+}
+
+AActor* AEnemyAIController::GetAttackTarget() const
+{
+	return Cast<AActor>(Blackboard->GetValueAsObject(TargetEnemyKey));
+}
+
+float AEnemyAIController::GetIdealRange() const
+{
+	return ControlledCharacter->AbilitiesComponent->GetCurrentAbilityRange();
 }

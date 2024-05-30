@@ -40,8 +40,8 @@ void UAbilitiesComponent::AddAbility(const TSubclassOf<AAbility>& AbilityClass, 
 {
 	if (AbilityClass != nullptr)
 	{
-		AAbility* Ability = GetWorld()->SpawnActor<AAbility>(AbilityClass);
-		Ability->SetOwner(GetOwner());
+		AAbility* Ability = GetWorld()->SpawnActorDeferred<AAbility>(AbilityClass, FTransform::Identity, GetOwner());
+		// Ability->SetOwner(GetOwner());
 		Ability->Caster = Cast<ACharacter>(GetOwner());
 
 		// If the owner is an enemy set the target of all abilities to the player
@@ -50,6 +50,11 @@ void UAbilitiesComponent::AddAbility(const TSubclassOf<AAbility>& AbilityClass, 
 			Ability->Target = UGameplayStatics::GetPlayerPawn(this, 0);
 		}
 
+		// if(GEngine) 
+		// 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow,
+		// 									 TEXT("Owner of ability is: " + GetOwner()->GetName()));
+
+		Ability->FinishSpawning(FTransform::Identity);
 		AbilitiesArray.Add(Ability);
 	}
 	else
@@ -70,6 +75,23 @@ void UAbilitiesComponent::ActivatePrimaryAttackAbility()
 	{
 		ClickAssignedAbilities[0]->Target = OwnerCharacter->GetTargetInteractableActor();
 	}
+}
+
+float UAbilitiesComponent::GetCurrentAbilityRange() const
+{
+	if (LastActivatedAbility != nullptr)
+	{
+		return LastActivatedAbility->GetRange();
+	}
+	if (ClickAssignedAbilities.IsValidIndex(0) && ClickAssignedAbilities[0] != nullptr)
+	{
+		return ClickAssignedAbilities[0]->GetRange();
+	}
+	if (AssignedAbilities.IsValidIndex(0) && AssignedAbilities[0] != nullptr)
+	{
+		return AssignedAbilities[0]->GetRange();
+	}
+	return 150.f;
 }
 
 const AAbility* UAbilitiesComponent::ActivateAbility(const int AbilityIndex)

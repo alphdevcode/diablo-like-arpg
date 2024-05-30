@@ -78,6 +78,11 @@ float AAbility::GetRemainingCooldown() const
 	return RemainingCooldown;
 }
 
+float AAbility::GetRange() const
+{
+	return Range;
+}
+
 void AAbility::SpawnAbilityEffects()
 {
 	SpawnAbilityEffectsWithLocation(EffectsSpawnLocation);

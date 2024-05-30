@@ -30,9 +30,20 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI")
 	class UAIPerceptionStimuliSourceComponent* AIPerceptionStimuliSourceComponent;
 
+	UPROPERTY()
+	class ADiabloLikeARPGCharacter* ControlledCharacter;
+
 private:
 	UPROPERTY(EditAnywhere)
 	class UBehaviorTree* AIBehavior; 
 
 	const FName TargetEnemyKey = "TargetEnemy";
+	const FName IdealRangeKey = "IdealRange";
+
+public:
+	UFUNCTION(BlueprintPure)
+	AActor* GetAttackTarget() const;
+
+	UFUNCTION(BlueprintPure)
+	float GetIdealRange() const;
 };

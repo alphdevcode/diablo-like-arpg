@@ -49,6 +49,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ActivatePrimaryAttackAbility();
 
+	UFUNCTION(BlueprintPure)
+	float GetCurrentAbilityRange() const;
+
 	const AAbility* ActivateAbility(const int AbilityIndex);
 	const AAbility* ActivateClickAbility(const int AbilityIndex);
 };

@@ -28,9 +28,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	bool bShouldLookAtTarget;
 
-private:
-	const FName AbilityEffectsSocket = FName("FX_Sword_Bottom");
+	UPROPERTY(EditAnywhere, Category = "Ability", meta=(AllowPrivateAccess = "true"))
+	FName AbilityEffectsSocket = FName("FX_Sword_Bottom");
 
+private:
 	void RotateToFaceTarget();
 	
 public:

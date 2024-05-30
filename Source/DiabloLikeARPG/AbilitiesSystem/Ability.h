@@ -88,6 +88,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	float GetRemainingCooldown() const;
 
+	UFUNCTION(BlueprintPure)
+	float GetRange() const;
+
 	// Note we can't overload a UFUNCTION
 	UFUNCTION(BlueprintCallable)
 	void SpawnAbilityEffects();
