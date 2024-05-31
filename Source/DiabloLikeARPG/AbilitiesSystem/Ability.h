@@ -34,6 +34,9 @@ protected:
 	bool bAutoActivateAbilityEffects = false;
 	
 	UPROPERTY(EditAnywhere, Category = "Ability")
+	bool bAutoActivateCastSound = false;
+	
+	UPROPERTY(EditAnywhere, Category = "Ability")
 	float ManaCost;
 
 	UPROPERTY(EditAnywhere, Category = "Ability")
@@ -49,6 +52,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	TArray<TSubclassOf<class AAbilityEffect>> Effects;
+
+	UPROPERTY(EditAnywhere, Category="Ability")
+	USoundBase* CastSound;
 
 	UPROPERTY(EditAnywhere, Category = "AbilityInfo")
 	FText AbilityName;

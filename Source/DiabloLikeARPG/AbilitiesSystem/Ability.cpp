@@ -6,6 +6,7 @@
 #include "../StatsComponent.h"
 #include "DiabloLikeARPG/DiabloLikeARPGAnimInstance.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 
 AAbility::AAbility()
 {
@@ -15,7 +16,7 @@ AAbility::AAbility()
 void AAbility::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	// Currently we wait for the next tick so properties are injected before calling Initialize
 	// TODO: Consider using SpawnActorDeferred https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/Engine/UWorld/SpawnActorDeferred?application_version=5.3
 	GetWorldTimerManager().SetTimerForNextTick(this, &AAbility::Initialize);
@@ -94,7 +95,7 @@ void AAbility::SpawnAbilityEffectsWithLocation(const FVector& SpawnLocation)
 	{
 		if (Effect.GetDefaultObject() != nullptr && Caster != nullptr)
 		{
-			const FTransform SpawnTransform = FTransform(Caster->GetActorRotation(),SpawnLocation);
+			const FTransform SpawnTransform = FTransform(Caster->GetActorRotation(), SpawnLocation);
 			AAbilityEffect* AbilityEffect = GetWorld()->
 				SpawnActorDeferred<AAbilityEffect>(Effect, SpawnTransform);
 			AbilityEffect->SetOwner(Caster);
@@ -113,14 +114,7 @@ void AAbility::ActivateAbility(const FVector& NewEffectsSpawnLocation)
 		// 	                                 TEXT("Can not activate ability"));
 		return;
 	}
-	// if (!bIsActive)
-	// {
-	// 	if(GEngine)
-	// 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
-	// 			TEXT("Ability is already active."));
-	// 	return;
-	// }
-	// bIsActive = true;
+
 	BeforeActivateAbility();
 	RemainingCooldown = Cooldown;
 	OnAbilityActivated.Broadcast();
@@ -130,10 +124,15 @@ void AAbility::ActivateAbility(const FVector& NewEffectsSpawnLocation)
 	{
 		StatsComponent->ConsumeMana(ManaCost);
 	}
-	
+
 	EffectsSpawnLocation = NewEffectsSpawnLocation;
-	if(bAutoActivateAbilityEffects)
+	if (bAutoActivateAbilityEffects)
 	{
 		SpawnAbilityEffects();
+	}
+
+	if (bAutoActivateCastSound && CastSound != nullptr)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, CastSound, GetActorLocation());
 	}
 }

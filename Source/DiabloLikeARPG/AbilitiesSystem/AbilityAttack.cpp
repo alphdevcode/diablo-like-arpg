@@ -44,6 +44,11 @@ void AAbilityAttack::HandleAttackCombo()
 		{
 			CasterAnimInstance->OnAnimNotifyAttackPeak.AddDynamic(this, &AAbilityAttack::HandleAbilityEffectsSpawning);
 		}
+
+		if(CastSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, CastSound, GetActorLocation());
+		}
 	}
 	else
 	{
