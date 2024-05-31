@@ -47,7 +47,7 @@ void AAbilityAttack::HandleAttackCombo()
 
 		if(CastSound != nullptr)
 		{
-			UGameplayStatics::PlaySoundAtLocation(this, CastSound, GetActorLocation());
+			UGameplayStatics::PlaySoundAtLocation(this, CastSound, Caster->GetActorLocation());
 		}
 	}
 	else

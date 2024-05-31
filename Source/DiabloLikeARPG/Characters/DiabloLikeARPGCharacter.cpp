@@ -166,8 +166,7 @@ void ADiabloLikeARPGCharacter::DestroyCharacter()
 	if (DestroyFX != nullptr)
 	{
 		// play particle system
-		UGameplayStatics::SpawnEmitterAtLocation(this,
-		                                         DestroyFX,
+		UGameplayStatics::SpawnEmitterAtLocation(this, DestroyFX,
 		                                         MeshLocation);
 	}
 

@@ -25,7 +25,8 @@ void AAbilityAOE::HandleAbilityEffectsSpawning()
 	{
 		CasterController->StopMovement();
 	}
-	SpawnAbilityEffectsWithLocation(Caster->GetMesh()->GetSocketLocation(AbilityEffectsSocket));
+
+	SpawnAbilityEffectsWithLocation(Caster->GetMesh()->GetSocketLocation(AbilityEffectsSocket) - FVector(0, 0, 15));
 	CasterAnimInstance->OnAnimNotifyAttackPeak
 		.RemoveDynamic(this, &AAbilityAOE::HandleAbilityEffectsSpawning);
 }

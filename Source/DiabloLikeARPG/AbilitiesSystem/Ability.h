@@ -53,7 +53,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	TArray<TSubclassOf<class AAbilityEffect>> Effects;
 
-	UPROPERTY(EditAnywhere, Category="Ability")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Ability")
 	USoundBase* CastSound;
 
 	UPROPERTY(EditAnywhere, Category = "AbilityInfo")
