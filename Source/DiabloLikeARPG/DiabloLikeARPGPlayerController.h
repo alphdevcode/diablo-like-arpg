@@ -20,6 +20,10 @@ class ADiabloLikeARPGPlayerController : public APlayerController
 public:
 	ADiabloLikeARPGPlayerController();
 
+	virtual void GameHasEnded(AActor* EndGameFocus, bool bIsWinner) override;
+
+	void RespawnPlayer();
+
 	/** Time Threshold to know if it was a short press */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	float ShortPressThreshold;
@@ -117,6 +121,15 @@ private:
 
 	bool bIsTouch; // Is it a touch device
 	float FollowTime; // For how long it has been pressed
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> HudWidgetClass;
+
+	UPROPERTY(EditAnywhere)
+	float RestartDelay = 5.f;
+
+	UPROPERTY()
+	UUserWidget* HudWidget;
 
 public:
 	void ContinuouslyMoveToLocation(const FVector& Location);

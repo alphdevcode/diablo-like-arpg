@@ -29,6 +29,8 @@ public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 	                         AController* EventInstigator, AActor* DamageCauser) override;
 
+	void HandleRespawn();
+
 	UFUNCTION(BlueprintPure)
 	bool IsDead() const;
 
@@ -60,6 +62,9 @@ protected:
 	IInteractableInterface* CurrentInteractable;
 	/** Set upon interaction, won't be cleared after interaction finished **/
 	IInteractableInterface* TargetInteractable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bCanRespawn = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UAnimMontage* HitAnimMontage;

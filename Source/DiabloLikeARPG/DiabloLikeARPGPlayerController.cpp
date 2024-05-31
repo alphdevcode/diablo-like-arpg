@@ -9,8 +9,12 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "AbilitiesSystem/AbilitiesComponent.h"
+#include "Actors/SpawnPoint.h"
+#include "Blueprint/UserWidget.h"
 #include "Characters/DiabloLikeARPGCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/GameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Utils/ActorFunctionLibrary.h"
 
@@ -20,6 +24,50 @@ ADiabloLikeARPGPlayerController::ADiabloLikeARPGPlayerController()
 	DefaultMouseCursor = EMouseCursor::Default;
 	CachedDestination = FVector::ZeroVector;
 	FollowTime = 0.f;
+}
+
+void ADiabloLikeARPGPlayerController::GameHasEnded(AActor* EndGameFocus, bool bIsWinner)
+{
+	Super::GameHasEnded(EndGameFocus, bIsWinner);
+
+	if (HudWidget)
+	{
+		HudWidget->RemoveFromParent();
+	}
+
+	if (bIsWinner)
+	{
+		// if (UUserWidget* WinScreenWidget = CreateWidget(this, WinScreenWidgetClass))
+		// {
+		// 	WinScreenWidget->AddToViewport();
+		// }
+	}
+	else
+	{
+		// if (UUserWidget* LoseScreenWidget = CreateWidget(this, LoseScreenWidgetClass))
+		// {
+		// 	LoseScreenWidget->AddToViewport();
+		// }
+	}
+
+	FTimerHandle RestartTimerHandle;
+	GetWorldTimerManager().SetTimer(RestartTimerHandle, this,
+									&ADiabloLikeARPGPlayerController::RespawnPlayer, 2.f, false);
+}
+
+void ADiabloLikeARPGPlayerController::RespawnPlayer()
+{
+	TArray<AActor*> SpawnPointArray;
+	UGameplayStatics::GetAllActorsOfClass(this, ASpawnPoint::StaticClass(), SpawnPointArray);
+	
+	if(SpawnPointArray.IsValidIndex(0))
+	{
+		RestartLevel(); 
+		// ControlledCharacter->SetActorLocationAndRotation(SpawnPointArray[0]->GetActorLocation(),
+		// 	SpawnPointArray[0]->GetActorRotation(), false, nullptr,
+		// 	ETeleportType::ResetPhysics);
+		// ControlledCharacter->HandleRespawn();
+	}
 }
 
 void ADiabloLikeARPGPlayerController::BeginPlay()
@@ -39,6 +87,12 @@ void ADiabloLikeARPGPlayerController::BeginPlay()
 	if (ControlledCharacter == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("ADiabloLikeARPGPlayerController::BeginPlay: ControlledCharacter is nullptr"));
+	}
+
+	HudWidget = CreateWidget(this, HudWidgetClass);
+	if (HudWidget)
+	{
+		HudWidget->AddToViewport();
 	}
 }
 

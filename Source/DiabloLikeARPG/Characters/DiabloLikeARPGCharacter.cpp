@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "DiabloLikeARPG/DiabloLikeARPGPlayerController.h"
+#include "DiabloLikeARPG/SoloARPGGameMode.h"
 #include "DiabloLikeARPG/StatsComponent.h"
 #include "DiabloLikeARPG/AbilitiesSystem/AbilitiesComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -107,25 +108,37 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 	if (IsDead())
 	{
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		DetachFromControllerPendingDestroy();
 
-		// UnPossessed();
-
-		const FName PelvisBone = "pelvis";
-		GetMesh()->SetAllBodiesBelowSimulatePhysics(PelvisBone, true, true);
-		GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(PelvisBone,
-		                                               1.f, false, true);
+		GetMesh()->SetSimulatePhysics(true);
+		// const FName PelvisBone = "pelvis";
+		// GetMesh()->SetAllBodiesBelowSimulatePhysics(PelvisBone, true, true);
+		// GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(PelvisBone,
+		//                                                1.f, false, true);
 
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
 			                                 TEXT("Dead"));
 
-		// Destroy the character after 2 seconds
-		GetWorldTimerManager().SetTimer(DestroyActorTimerHandle, this,
-		                                &ADiabloLikeARPGCharacter::DestroyCharacter, 2.f, false);
+		if(const ASoloARPGGameMode* GameMode = Cast<ASoloARPGGameMode>(GetWorld()->GetAuthGameMode()))
+		{
+			GameMode->GetOnPawnDied().Broadcast(this);
+		}
+		
+		if (!bCanRespawn)
+		{
+			// Destroy the character after 2 seconds
+			GetWorldTimerManager().SetTimer(DestroyActorTimerHandle, this,
+											&ADiabloLikeARPGCharacter::DestroyCharacter, 2.f, false);
+		}
 	}
 
 	return DamageToApply;
+}
+
+void ADiabloLikeARPGCharacter::HandleRespawn()
+{
+	GetMesh()->SetSimulatePhysics(false);
+	GetMesh()->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 bool ADiabloLikeARPGCharacter::IsDead() const
@@ -162,6 +175,9 @@ void ADiabloLikeARPGCharacter::CheckForInteractions()
 
 void ADiabloLikeARPGCharacter::DestroyCharacter()
 {
+	DetachFromControllerPendingDestroy();
+	UnPossessed();
+	
 	const FVector MeshLocation = GetMesh()->GetBoneLocation("pelvis");
 	if (DestroyFX != nullptr)
 	{
@@ -175,7 +191,6 @@ void ADiabloLikeARPGCharacter::DestroyCharacter()
 		UGameplayStatics::PlaySoundAtLocation(this, DestroySound,
 		                                      MeshLocation);
 	}
-
 
 	DestroyActorTimerHandle.Invalidate();
 	Destroy();
