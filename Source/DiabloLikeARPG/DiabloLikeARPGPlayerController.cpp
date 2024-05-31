@@ -1,3 +1,5 @@
+// Copyright 2024 AlphDevCode. All Rights Reserved.
+
 #include "DiabloLikeARPGPlayerController.h"
 
 #include "GameFramework/Pawn.h"
