@@ -52,7 +52,7 @@ void ADiabloLikeARPGPlayerController::GameHasEnded(AActor* EndGameFocus, bool bI
 
 	FTimerHandle RestartTimerHandle;
 	GetWorldTimerManager().SetTimer(RestartTimerHandle, this,
-									&ADiabloLikeARPGPlayerController::RespawnPlayer, 2.f, false);
+									&ADiabloLikeARPGPlayerController::RestartLevel, 2.f, false);
 }
 
 void ADiabloLikeARPGPlayerController::RespawnPlayer()
