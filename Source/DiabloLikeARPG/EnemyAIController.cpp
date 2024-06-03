@@ -6,6 +6,7 @@
 #include "AbilitiesSystem/AbilitiesComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Characters/DiabloLikeARPGCharacter.h"
+#include "GameFramework/GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
@@ -28,6 +29,7 @@ void AEnemyAIController::BeginPlay()
 	Super::BeginPlay();
 
 	ControlledCharacter = Cast<ADiabloLikeARPGCharacter>(GetCharacter());
+	bShouldLookForPlayer = true;
 
 	if (AIBehavior != nullptr)
 	{
@@ -56,12 +58,23 @@ void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus St
 			UAIPerceptionSystem::GetSenseClassForStimulus(this, Stimulus);
 		if (SenseClass == UAISense_Sight::StaticClass() || SenseClass == UAISense_Damage::StaticClass())
 		{
-			if (Blackboard != nullptr)
+			if (Blackboard != nullptr && bShouldLookForPlayer)
 			{
 				Blackboard->SetValueAsObject(TargetEnemyKey, Actor);
 			}
 		}
 	}
+}
+
+void AEnemyAIController::GameHasEnded(AActor* EndGameFocus, bool bIsWinner)
+{
+	Super::GameHasEnded(EndGameFocus, bIsWinner);
+	
+	if (Blackboard != nullptr)
+	{
+		Blackboard->ClearValue(TargetEnemyKey);
+	}
+	bShouldLookForPlayer = false;
 }
 
 AActor* AEnemyAIController::GetAttackTarget() const

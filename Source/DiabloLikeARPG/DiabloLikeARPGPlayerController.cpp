@@ -44,6 +44,11 @@ void ADiabloLikeARPGPlayerController::GameHasEnded(AActor* EndGameFocus, bool bI
 	}
 	else
 	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+		GetLocalPlayer()))
+		{
+			Subsystem->RemoveMappingContext(DefaultMappingContext);
+		}
 		// if (UUserWidget* LoseScreenWidget = CreateWidget(this, LoseScreenWidgetClass))
 		// {
 		// 	LoseScreenWidget->AddToViewport();
@@ -55,6 +60,17 @@ void ADiabloLikeARPGPlayerController::GameHasEnded(AActor* EndGameFocus, bool bI
 									&ADiabloLikeARPGPlayerController::RestartLevel, 2.f, false);
 }
 
+void ADiabloLikeARPGPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	// FHitResult HitResult;
+	// if(GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, HitResult))
+	// {
+	// 	UActorFunctionLibrary::LookAtDestination(ControlledCharacter, HitResult.Location);
+	// }
+}
+
 void ADiabloLikeARPGPlayerController::RespawnPlayer()
 {
 	TArray<AActor*> SpawnPointArray;
@@ -62,7 +78,6 @@ void ADiabloLikeARPGPlayerController::RespawnPlayer()
 	
 	if(SpawnPointArray.IsValidIndex(0))
 	{
-		RestartLevel(); 
 		// ControlledCharacter->SetActorLocationAndRotation(SpawnPointArray[0]->GetActorLocation(),
 		// 	SpawnPointArray[0]->GetActorRotation(), false, nullptr,
 		// 	ETeleportType::ResetPhysics);

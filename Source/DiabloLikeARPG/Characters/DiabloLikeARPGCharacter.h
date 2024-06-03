@@ -29,7 +29,7 @@ public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 	                         AController* EventInstigator, AActor* DamageCauser) override;
 
-	void HandleRespawn();
+	// void HandleRespawn();
 
 	UFUNCTION(BlueprintPure)
 	bool IsDead() const;

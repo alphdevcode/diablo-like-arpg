@@ -35,12 +35,16 @@ protected:
 
 private:
 	UPROPERTY(EditAnywhere)
-	class UBehaviorTree* AIBehavior; 
+	class UBehaviorTree* AIBehavior;
+
+	bool bShouldLookForPlayer = true;
 
 	const FName TargetEnemyKey = "TargetEnemy";
 	const FName IdealRangeKey = "IdealRange";
 
 public:
+	virtual void GameHasEnded(AActor* EndGameFocus, bool bIsWinner) override;
+	
 	UFUNCTION(BlueprintPure)
 	AActor* GetAttackTarget() const;
 

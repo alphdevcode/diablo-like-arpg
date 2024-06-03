@@ -3,7 +3,6 @@
 
 #include "SoloARPGGameMode.h"
 
-#include "DiabloLikeARPGPlayerController.h"
 #include "EnemyAIController.h"
 #include "EngineUtils.h"
 #include "GameFramework/Character.h"

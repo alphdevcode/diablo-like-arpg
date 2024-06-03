@@ -22,7 +22,7 @@ public:
 
 	virtual void GameHasEnded(AActor* EndGameFocus, bool bIsWinner) override;
 
-	void RespawnPlayer();
+	virtual void Tick(float DeltaSeconds) override;
 
 	/** Time Threshold to know if it was a short press */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -133,4 +133,5 @@ private:
 
 public:
 	void ContinuouslyMoveToLocation(const FVector& Location);
+	void RespawnPlayer();
 };

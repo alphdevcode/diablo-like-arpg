@@ -108,7 +108,7 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 	if (IsDead())
 	{
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+		
 		GetMesh()->SetSimulatePhysics(true);
 		// const FName PelvisBone = "pelvis";
 		// GetMesh()->SetAllBodiesBelowSimulatePhysics(PelvisBone, true, true);
@@ -123,9 +123,12 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 		{
 			GameMode->GetOnPawnDied().Broadcast(this);
 		}
-		
+
 		if (!bCanRespawn)
 		{
+			DetachFromControllerPendingDestroy();
+			UnPossessed();
+			
 			// Destroy the character after 2 seconds
 			GetWorldTimerManager().SetTimer(DestroyActorTimerHandle, this,
 											&ADiabloLikeARPGCharacter::DestroyCharacter, 2.f, false);
@@ -135,11 +138,11 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 	return DamageToApply;
 }
 
-void ADiabloLikeARPGCharacter::HandleRespawn()
-{
-	GetMesh()->SetSimulatePhysics(false);
-	GetMesh()->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-}
+// void ADiabloLikeARPGCharacter::HandleRespawn()
+// {
+// 	GetMesh()->SetSimulatePhysics(false);
+// 	GetMesh()->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+// }
 
 bool ADiabloLikeARPGCharacter::IsDead() const
 {
@@ -175,9 +178,6 @@ void ADiabloLikeARPGCharacter::CheckForInteractions()
 
 void ADiabloLikeARPGCharacter::DestroyCharacter()
 {
-	DetachFromControllerPendingDestroy();
-	UnPossessed();
-	
 	const FVector MeshLocation = GetMesh()->GetBoneLocation("pelvis");
 	if (DestroyFX != nullptr)
 	{
