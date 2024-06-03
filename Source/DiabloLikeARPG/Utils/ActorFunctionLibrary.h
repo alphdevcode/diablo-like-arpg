@@ -16,6 +16,6 @@ class DIABLOLIKEARPG_API UActorFunctionLibrary : public UBlueprintFunctionLibrar
 	
 public:
 	UFUNCTION(BlueprintCallable, Category = "ActorUtils")
-	static void LookAtDestination(AActor* Actor, const FVector& Destination, const float InterpSpeed = 10.f);
+	static FRotator LookAtDestination(AActor* Actor, const FVector& Destination, const float InterpSpeed = 10.f);
 
 };

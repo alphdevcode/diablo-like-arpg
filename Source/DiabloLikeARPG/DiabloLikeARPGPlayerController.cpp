@@ -13,7 +13,6 @@
 #include "Blueprint/UserWidget.h"
 #include "Characters/DiabloLikeARPGCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Utils/ActorFunctionLibrary.h"
@@ -64,11 +63,7 @@ void ADiabloLikeARPGPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// FHitResult HitResult;
-	// if(GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, HitResult))
-	// {
-	// 	UActorFunctionLibrary::LookAtDestination(ControlledCharacter, HitResult.Location);
-	// }
+	// if(bShouldLookAtMouseCursor) LookAtToMouseCursor();
 }
 
 void ADiabloLikeARPGPlayerController::RespawnPlayer()
@@ -208,13 +203,20 @@ void ADiabloLikeARPGPlayerController::OnRootedStarted()
 	if (ControlledCharacter != nullptr)
 	{
 		ControlledCharacter->GetCharacterMovement()
-		                   ->SetMovementMode(EMovementMode::MOVE_None);
+		                   ->bUseControllerDesiredRotation = false;
+		ControlledCharacter->GetCharacterMovement()
+						   ->bOrientRotationToMovement = false;
 	}
 }
 
 void ADiabloLikeARPGPlayerController::OnRootedTriggered()
 {
-	UActorFunctionLibrary::LookAtDestination(ControlledCharacter, CachedDestination);
+	// UActorFunctionLibrary::LookAtDestination(ControlledCharacter, CachedDestination);
+	FHitResult HitResult;
+	if(GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, HitResult))
+	{
+		RotatorToMouseCursor = UActorFunctionLibrary::LookAtDestination(ControlledCharacter, HitResult.Location);
+	}
 }
 
 void ADiabloLikeARPGPlayerController::OnRootedReleased()
@@ -222,7 +224,9 @@ void ADiabloLikeARPGPlayerController::OnRootedReleased()
 	if (ControlledCharacter != nullptr)
 	{
 		ControlledCharacter->GetCharacterMovement()
-		                   ->SetMovementMode(EMovementMode::MOVE_Walking);
+						   ->bUseControllerDesiredRotation = true;
+		ControlledCharacter->GetCharacterMovement()
+						   ->bOrientRotationToMovement = true;
 	}
 }
 
@@ -271,6 +275,15 @@ void ADiabloLikeARPGPlayerController::OnSetRotateCameraStarted()
 void ADiabloLikeARPGPlayerController::OnSetRotateCameraReleased()
 {
 	bCanRotateCamera = false;
+}
+
+void ADiabloLikeARPGPlayerController::LookAtToMouseCursor()
+{
+	FHitResult HitResult;
+	if(GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, HitResult))
+	{
+		UActorFunctionLibrary::LookAtDestination(ControlledCharacter, HitResult.Location);
+	}
 }
 
 void ADiabloLikeARPGPlayerController::OnInputStarted()

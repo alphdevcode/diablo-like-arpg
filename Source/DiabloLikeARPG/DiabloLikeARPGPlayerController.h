@@ -84,6 +84,9 @@ protected:
 	UPROPERTY()
 	class ADiabloLikeARPGCharacter* ControlledCharacter;
 
+	UPROPERTY(BlueprintReadOnly)
+	FRotator RotatorToMouseCursor;
+
 	virtual void SetupInputComponent() override;
 	void SetupAbilitiesInput(UEnhancedInputComponent* EnhancedInputComponent);
 	void OnAbilityActivated(const int AbilityIndex);
@@ -113,11 +116,14 @@ protected:
 	void OnSetRotateCameraStarted();
 	void OnSetRotateCameraReleased();
 
+	void LookAtToMouseCursor();
+
 private:
 	FVector CachedDestination;
 
 	bool bCanRotateCamera;
-	bool bIsManualMoving; 
+	bool bIsManualMoving;
+	bool bShouldLookAtMouseCursor;
 
 	bool bIsTouch; // Is it a touch device
 	float FollowTime; // For how long it has been pressed

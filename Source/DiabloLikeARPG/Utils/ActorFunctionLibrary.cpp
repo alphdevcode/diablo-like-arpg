@@ -5,14 +5,14 @@
 
 #include "Kismet/KismetMathLibrary.h"
 
-void UActorFunctionLibrary::LookAtDestination(AActor* Actor, const FVector& Destination, const float InterpSpeed)
+FRotator UActorFunctionLibrary::LookAtDestination(AActor* Actor, const FVector& Destination, const float InterpSpeed)
 {
 	if (Actor == nullptr)
 	{
 		if(GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
 			TEXT("LookAtDestination: Character is nullptr"));
-		return;
+		return FRotator::ZeroRotator;
 	}
 
 	const FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(
@@ -25,4 +25,5 @@ void UActorFunctionLibrary::LookAtDestination(AActor* Actor, const FVector& Dest
 		InterpSpeed);
 
 	Actor->SetActorRotation(InterpRotator);
+	return LookAtRotator;
 }
