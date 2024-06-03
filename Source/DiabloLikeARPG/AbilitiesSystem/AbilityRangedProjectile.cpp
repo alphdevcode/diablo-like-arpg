@@ -16,7 +16,7 @@ void AAbilityRangedProjectile::Initialize()
 
 void AAbilityRangedProjectile::BeforeActivateAbility()
 {
-	// Only assign the target to last interactable for the player
+	// Assign the target to last interactable only for the player
 	if(const ADiabloLikeARPGCharacter* Character = Cast<ADiabloLikeARPGCharacter>(Caster); Character != nullptr
 		&& Character == UGameplayStatics::GetPlayerCharacter(this, 0))
 	{
