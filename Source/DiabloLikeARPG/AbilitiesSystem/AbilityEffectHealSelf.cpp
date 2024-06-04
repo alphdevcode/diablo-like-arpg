@@ -21,4 +21,12 @@ void AAbilityEffectHealSelf::OnActivate()
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
 				TEXT("Can't find StatsComponent on Ability's Caster!"));
 	}
+
+	FTimerHandle DestroyTimer;
+	GetWorld()->GetTimerManager().SetTimer(DestroyTimer, this, &AAbilityEffectHealSelf::DestroyEffect, .2f, false);
+}
+
+void AAbilityEffectHealSelf::DestroyEffect()
+{
+	Destroy();
 }

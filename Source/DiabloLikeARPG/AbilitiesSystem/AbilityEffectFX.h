@@ -25,5 +25,8 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (EditCondition = "bShouldAttachToCaster == true", EditConditionHides))
 	FName AttachPointName;
+
+private:
+	void DestroyEffect();
 	
 };

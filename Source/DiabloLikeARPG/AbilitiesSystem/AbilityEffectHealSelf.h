@@ -19,4 +19,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect", meta = (AllowPrivate))
 	int32 HealAmount = 10;
+
+private:
+	void DestroyEffect();
 };

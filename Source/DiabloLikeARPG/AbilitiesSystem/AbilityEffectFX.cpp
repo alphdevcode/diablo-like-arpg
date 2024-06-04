@@ -35,4 +35,12 @@ void AAbilityEffectFX::BeginPlay()
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, AbilityFX, GetActorLocation());
 	}
+
+	FTimerHandle DestroyTimer;
+	GetWorld()->GetTimerManager().SetTimer(DestroyTimer, this, &AAbilityEffectFX::DestroyEffect, .2f, false);
+}
+
+void AAbilityEffectFX::DestroyEffect()
+{
+	Destroy();
 }

@@ -83,7 +83,7 @@ public:
 	float GetManaPercent() const;
 
 	UFUNCTION(BlueprintPure)
-	float GetStatValue(EPlayerStat Stat) const;
+	float GetStatValue(const EPlayerStat Stat) const;
 
 	UFUNCTION(BlueprintPure)
 	float GetHealth() const { return Health; }
@@ -95,16 +95,16 @@ public:
 	void LevelUp();
 
 	UFUNCTION(BlueprintCallable)
-	void ConsumeMana(float Amount);
+	void ConsumeMana(const float Amount);
 
 	UFUNCTION(BlueprintCallable)
-	void ReduceHealth(float Amount);
+	void ReduceHealth(const float Amount);
 
 	UFUNCTION(BlueprintCallable)
-	void RecoverMana(float Amount);
+	void RecoverMana(const float Amount);
 
 	UFUNCTION(BlueprintCallable)
-	void RecoverHealth(float Amount);
+	void RecoverHealth(const float Amount);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChanged OnHealthChanged;
