@@ -62,6 +62,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "AbilityInfo")
 	FText AbilityDescription;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AbilityInfo")
+	FName AbilityShortcut = "";
+
 	UPROPERTY(EditAnywhere, Category = "AbilityInfo")
 	UTexture2D* AbilityIcon;
 
