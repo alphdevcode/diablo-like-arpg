@@ -88,7 +88,7 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 
 	if(ImpactSound != nullptr)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, Hit.ImpactPoint);
 	}
 
 	UGameplayStatics::ApplyDamage(OtherActor, Damage, GetInstigatorController(),
