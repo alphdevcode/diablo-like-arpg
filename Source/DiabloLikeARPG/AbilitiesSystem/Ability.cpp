@@ -133,6 +133,6 @@ void AAbility::ActivateAbility(const FVector& NewEffectsSpawnLocation)
 
 	if (bAutoActivateCastSound && CastSound != nullptr)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, CastSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(this, CastSound, Caster->GetActorLocation());
 	}
 }
