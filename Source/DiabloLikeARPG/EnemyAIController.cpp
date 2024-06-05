@@ -22,28 +22,18 @@ AEnemyAIController::AEnemyAIController()
 	AIPerceptionStimuliSourceComponent->RegisterForSense(UAISense_Sight::StaticClass());
 	AIPerceptionStimuliSourceComponent->RegisterForSense(UAISense_Damage::StaticClass());
 	AIPerceptionStimuliSourceComponent->bAutoRegister = true;
+
+	bShouldLookForPlayer = true;
 }
 
 void AEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ControlledCharacter = Cast<ADiabloLikeARPGCharacter>(GetCharacter());
-	bShouldLookForPlayer = true;
+	GetWorldTimerManager().SetTimerForNextTick(this, &AEnemyAIController::Initialize);
 
-	if (AIBehavior != nullptr)
-	{
-		RunBehaviorTree(AIBehavior);
-	}
-
-	if (Blackboard)
-	{
-		if (ControlledCharacter != nullptr)
-			Blackboard->SetValueAsFloat(IdealRangeKey, GetIdealRange());
-	}
-
-	AIPerceptionComponent->OnTargetPerceptionUpdated
-		.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
+	AIPerceptionComponent->OnTargetPerceptionUpdated.
+	                       AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
 }
 
 void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
@@ -58,18 +48,41 @@ void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus St
 			UAIPerceptionSystem::GetSenseClassForStimulus(this, Stimulus);
 		if (SenseClass == UAISense_Sight::StaticClass() || SenseClass == UAISense_Damage::StaticClass())
 		{
-			if (Blackboard != nullptr && bShouldLookForPlayer)
-			{
-				Blackboard->SetValueAsObject(TargetEnemyKey, Actor);
-			}
+			SetAttackTarget(Actor);
 		}
+	}
+}
+
+void AEnemyAIController::Initialize()
+{
+	ControlledCharacter = Cast<ADiabloLikeARPGCharacter>(GetCharacter());
+
+	if (!ControlledCharacter)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Enemy AI Controller: Controlled character is null for %s"), *GetName());
+	}
+
+	if (AIBehavior != nullptr)
+	{
+		RunBehaviorTree(AIBehavior);
+	}
+
+	if (Blackboard)
+	{
+		if (ControlledCharacter != nullptr)
+			Blackboard->SetValueAsFloat(IdealRangeKey, GetIdealRange());
+	}
+
+	if (bAutoChasePlayer)
+	{
+		SetAttackTarget(UGameplayStatics::GetPlayerCharacter(this, 0));
 	}
 }
 
 void AEnemyAIController::GameHasEnded(AActor* EndGameFocus, bool bIsWinner)
 {
 	Super::GameHasEnded(EndGameFocus, bIsWinner);
-	
+
 	if (Blackboard != nullptr)
 	{
 		Blackboard->ClearValue(TargetEnemyKey);
@@ -84,5 +97,27 @@ AActor* AEnemyAIController::GetAttackTarget() const
 
 float AEnemyAIController::GetIdealRange() const
 {
+	if (ControlledCharacter == nullptr)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
+			"Can not get ideal range. Controlled character is null! Returning default value.");
+		}
+		return 150.f;
+	}
 	return ControlledCharacter->AbilitiesComponent->GetCurrentAbilityRange();
+}
+
+void AEnemyAIController::SetAttackTarget(AActor* NewAttackTarget)
+{
+	if (Blackboard != nullptr && bShouldLookForPlayer)
+	{
+		Blackboard->SetValueAsObject(TargetEnemyKey, NewAttackTarget);
+	}
+}
+
+void AEnemyAIController::SetAutoChasePlayer(const bool NewAutoChasePlayer)
+{
+	bAutoChasePlayer = NewAutoChasePlayer;
 }

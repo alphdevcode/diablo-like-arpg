@@ -23,7 +23,7 @@ void AAbilityEffectHealSelf::OnActivate()
 	}
 
 	FTimerHandle DestroyTimer;
-	GetWorld()->GetTimerManager().SetTimer(DestroyTimer, this, &AAbilityEffectHealSelf::DestroyEffect, .2f, false);
+	GetWorldTimerManager().SetTimer(DestroyTimer, this, &AAbilityEffectHealSelf::DestroyEffect, .2f, false);
 }
 
 void AAbilityEffectHealSelf::DestroyEffect()

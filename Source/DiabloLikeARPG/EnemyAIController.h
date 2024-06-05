@@ -24,6 +24,8 @@ protected:
 	UFUNCTION()
 	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 
+	void Initialize();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI")
 	class UAIPerceptionComponent* AIPerceptionComponent;
 	
@@ -39,6 +41,9 @@ private:
 
 	bool bShouldLookForPlayer = true;
 
+	/** If true, the enemy will automatically chase the player without needing to see him first */
+	bool bAutoChasePlayer = false;
+
 	const FName TargetEnemyKey = "TargetEnemy";
 	const FName IdealRangeKey = "IdealRange";
 
@@ -47,7 +52,10 @@ public:
 	
 	UFUNCTION(BlueprintPure)
 	AActor* GetAttackTarget() const;
-
+	
 	UFUNCTION(BlueprintPure)
 	float GetIdealRange() const;
+
+	void SetAttackTarget(AActor* NewAttackTarget);
+	void SetAutoChasePlayer(const bool NewAutoChasePlayer);
 };

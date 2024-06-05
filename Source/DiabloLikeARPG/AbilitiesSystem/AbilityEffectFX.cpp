@@ -37,7 +37,7 @@ void AAbilityEffectFX::BeginPlay()
 	}
 
 	FTimerHandle DestroyTimer;
-	GetWorld()->GetTimerManager().SetTimer(DestroyTimer, this, &AAbilityEffectFX::DestroyEffect, .2f, false);
+	GetWorldTimerManager().SetTimer(DestroyTimer, this, &AAbilityEffectFX::DestroyEffect, .2f, false);
 }
 
 void AAbilityEffectFX::DestroyEffect()
