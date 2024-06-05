@@ -54,7 +54,7 @@ public:
 	AActor* GetAttackTarget() const;
 	
 	UFUNCTION(BlueprintPure)
-	float GetIdealRange() const;
+	virtual float GetIdealRange() const;
 
 	void SetAttackTarget(AActor* NewAttackTarget);
 	void SetAutoChasePlayer(const bool NewAutoChasePlayer);

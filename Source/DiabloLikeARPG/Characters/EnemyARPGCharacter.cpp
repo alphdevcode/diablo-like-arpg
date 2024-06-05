@@ -44,6 +44,11 @@ void AEnemyARPGCharacter::Attack()
 	AbilitiesComponent->ActivatePrimaryAttackAbility();
 }
 
+void AEnemyARPGCharacter::ActivateMainAbility()
+{
+	AbilitiesComponent->ActivateAbility(0);
+}
+
 void AEnemyARPGCharacter::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	Super::NotifyActorOnClicked(ButtonPressed);

@@ -31,6 +31,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category="Abilities")
 	void Attack();
 
+	UFUNCTION(BlueprintCallable, Category="Abilities")
+	void ActivateMainAbility();
+
 	/** The radius in which the enemy can interact with actors (e.g. attack the player) */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Interaction")
 	float InteractionRadius = 100.f;
