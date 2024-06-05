@@ -19,5 +19,14 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	UAnimMontage* AbilityAnimMontage;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	bool bUseCastEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (EditCondition = "bUseCastEffect == true", EditConditionHides))
+	UParticleSystem* CastEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (EditCondition = "bUseCastEffect == true", EditConditionHides))
+	FName MeshPointNameToSpawnCastEffectOn;
 	
 };
