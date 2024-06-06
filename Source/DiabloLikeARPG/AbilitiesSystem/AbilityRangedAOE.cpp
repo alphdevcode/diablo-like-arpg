@@ -26,8 +26,8 @@ void AAbilityRangedAOE::HandleAbilityEffectsSpawning()
 	{
 		CasterController->StopMovement();
 	}
-
-	SpawnAbilityEffectsWithLocation(Target->GetActorLocation() + FVector(0, 0, 70));
+	
+	SpawnAbilityEffectsWithLocation(Target->GetActorLocation() + EffectsSpawnOffset);
 	CasterAnimInstance->OnAnimNotifyAttackPeak
 		.RemoveDynamic(this, &AAbilityRangedAOE::HandleAbilityEffectsSpawning);
 }

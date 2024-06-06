@@ -20,4 +20,7 @@ protected:
 
 	UFUNCTION()
 	void HandleAbilityEffectsSpawning();
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FVector EffectsSpawnOffset;
 };

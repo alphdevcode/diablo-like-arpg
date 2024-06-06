@@ -83,7 +83,7 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	if(ImpactFX != nullptr)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactFX, Hit.Location,
-			GetActorRotation());
+			GetActorRotation(), FVector(1), true, EPSCPoolMethod::AutoRelease);
 	}
 
 	if(ImpactSound != nullptr)

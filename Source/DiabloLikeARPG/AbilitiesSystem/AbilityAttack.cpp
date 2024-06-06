@@ -87,8 +87,8 @@ void AAbilityAttack::HandleAbilityEffectsSpawning()
 		{
 			// play particle system
 			UGameplayStatics::SpawnEmitterAtLocation(this,
-			                                         ImpactFX,
-			                                         TargetCharacter->GetMesh()->GetSocketLocation("Impact"));
+			                ImpactFX, TargetCharacter->GetMesh()->GetSocketLocation("Impact"),
+			                FRotator::ZeroRotator, FVector(1), true, EPSCPoolMethod::AutoRelease);
 		}
 		SpawnAbilityEffects();
 		CasterAnimInstance->OnAnimNotifyAttackPeak.RemoveDynamic(this, &AAbilityAttack::HandleAbilityEffectsSpawning);

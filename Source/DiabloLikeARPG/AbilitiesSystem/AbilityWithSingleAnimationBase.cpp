@@ -23,13 +23,24 @@ void AAbilityWithSingleAnimationBase::AbilityActivated()
 
 	if (CastEffect != nullptr)
 	{
-		FVector SpawnLocation;
-		FRotator SpawnRotation;
-		Caster->GetMesh()->GetSocketWorldLocationAndRotation(MeshPointNameToSpawnCastEffectOn,
-				SpawnLocation, SpawnRotation);
 		
-		UGameplayStatics::SpawnEmitterAtLocation(this, CastEffect,
-			SpawnLocation, SpawnRotation);
+		if(bShouldAttachCastEffect)
+		{
+			UGameplayStatics::SpawnEmitterAttached(CastEffect,
+				Caster->GetMesh(), MeshPointNameToSpawnCastEffectOn,
+				FVector(ForceInit), FRotator::ZeroRotator, FVector(1),
+				EAttachLocation::KeepRelativeOffset, true,
+				EPSCPoolMethod::AutoRelease);
+		}
+		else
+		{
+			FVector SpawnLocation;
+			FRotator SpawnRotation;
+			Caster->GetMesh()->GetSocketWorldLocationAndRotation(MeshPointNameToSpawnCastEffectOn,
+					SpawnLocation, SpawnRotation);
+			UGameplayStatics::SpawnEmitterAtLocation(this, CastEffect,
+			          SpawnLocation, SpawnRotation, FVector(1), true, EPSCPoolMethod::AutoRelease);
+		}
 	}
 	else
 	{

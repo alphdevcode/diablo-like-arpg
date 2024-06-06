@@ -28,5 +28,7 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (EditCondition = "bUseCastEffect == true", EditConditionHides))
 	FName MeshPointNameToSpawnCastEffectOn;
-	
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (EditCondition = "bUseCastEffect == true", EditConditionHides))
+	bool bShouldAttachCastEffect;
 };

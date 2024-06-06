@@ -29,11 +29,14 @@ void AAbilityEffectFX::BeginPlay()
 			return;
 		}
 		UGameplayStatics::SpawnEmitterAttached(AbilityFX, ParentAbility->Caster->GetMesh(),
-		                                       AttachPointName);
+		                                       AttachPointName, SpawnOffset, FRotator::ZeroRotator,
+		                                       FVector(1), EAttachLocation::KeepRelativeOffset,
+		                                       true, EPSCPoolMethod::AutoRelease);
 	}
 	else
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(this, AbilityFX, GetActorLocation());
+		UGameplayStatics::SpawnEmitterAtLocation(this, AbilityFX, GetActorLocation() + SpawnOffset,
+			GetActorRotation(), FVector(1), true, EPSCPoolMethod::AutoRelease);
 	}
 
 	FTimerHandle DestroyTimer;

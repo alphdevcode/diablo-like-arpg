@@ -183,7 +183,8 @@ void ADiabloLikeARPGCharacter::DestroyCharacter()
 	{
 		// play particle system
 		UGameplayStatics::SpawnEmitterAtLocation(this, DestroyFX,
-		                                         MeshLocation);
+		                                         MeshLocation, FRotator::ZeroRotator,
+		                                         FVector(1), true, EPSCPoolMethod::AutoRelease);
 	}
 
 	if (DestroySound != nullptr)

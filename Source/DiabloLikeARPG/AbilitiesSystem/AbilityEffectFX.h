@@ -21,6 +21,9 @@ protected:
 	UParticleSystem* AbilityFX;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FVector SpawnOffset;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	bool bShouldAttachToCaster = false;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (EditCondition = "bShouldAttachToCaster == true", EditConditionHides))
