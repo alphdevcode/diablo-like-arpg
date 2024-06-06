@@ -3,7 +3,7 @@
 #include "EnemyARPGCharacter.h"
 
 #include "Components/WidgetComponent.h"
-#include "DiabloLikeARPG/AbilitiesSystem/AbilitiesComponent.h"
+#include "DiabloLikeARPG/Components/AbilitiesComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AISense_Damage.h"
 
@@ -12,6 +12,8 @@ AEnemyARPGCharacter::AEnemyARPGCharacter()
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
 	HealthBar->SetupAttachment(RootComponent);
 	HealthBar->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
+
+	EnemyName = "Enemy";
 }
 
 float AEnemyARPGCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -95,4 +97,9 @@ void AEnemyARPGCharacter::Interact(ACharacter* InteractorCharacter)
 AActor* AEnemyARPGCharacter::GetInteractableActor()
 {
 	return this;
+}
+
+FName AEnemyARPGCharacter::GetEnemyName() const
+{
+	return EnemyName;
 }

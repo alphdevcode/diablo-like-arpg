@@ -4,7 +4,7 @@
 #include "AbilityEffectHealSelf.h"
 
 #include "Ability.h"
-#include "DiabloLikeARPG/StatsComponent.h"
+#include "DiabloLikeARPG/Components/StatsComponent.h"
 #include "GameFramework/Character.h"
 
 
@@ -15,7 +15,8 @@ void AAbilityEffectHealSelf::OnActivate()
 	if(UStatsComponent* StatsComponent = ParentAbility->Caster->GetComponentByClass<UStatsComponent>())
 	{
 		StatsComponent->RecoverHealth(HealAmount);
-	}else
+	}
+	else
 	{
 		if(GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,

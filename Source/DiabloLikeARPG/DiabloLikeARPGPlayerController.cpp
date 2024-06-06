@@ -8,10 +8,10 @@
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "AbilitiesSystem/AbilitiesComponent.h"
 #include "Actors/SpawnPoint.h"
 #include "Blueprint/UserWidget.h"
 #include "Characters/DiabloLikeARPGCharacter.h"
+#include "Components/AbilitiesComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -190,12 +190,12 @@ void ADiabloLikeARPGPlayerController::SetupAbilitiesInput(UEnhancedInputComponen
 
 void ADiabloLikeARPGPlayerController::OnAbilityActivated(const int AbilityIndex)
 {
-	ControlledCharacter->AbilitiesComponent->ActivateAbility(AbilityIndex);
+	ControlledCharacter->GetAbilitiesComponent()->ActivateAbility(AbilityIndex);
 }
 
 void ADiabloLikeARPGPlayerController::OnClickAbilityActivated(const int AbilityIndex)
 {
-	ControlledCharacter->AbilitiesComponent->ActivateClickAbility(AbilityIndex);
+	ControlledCharacter->GetAbilitiesComponent()->ActivateClickAbility(AbilityIndex);
 }
 
 void ADiabloLikeARPGPlayerController::OnRootedStarted()

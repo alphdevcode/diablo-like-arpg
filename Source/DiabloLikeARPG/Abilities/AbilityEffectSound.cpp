@@ -3,7 +3,7 @@
 
 #include "AbilityEffectSound.h"
 
-#include "AbilitiesSystem/Ability.h"
+#include "Ability.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 

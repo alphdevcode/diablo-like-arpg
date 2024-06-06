@@ -3,8 +3,8 @@
 #include "Ability.h"
 
 #include "AbilityEffect.h"
-#include "../StatsComponent.h"
 #include "DiabloLikeARPG/DiabloLikeARPGAnimInstance.h"
+#include "DiabloLikeARPG/Components/StatsComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 

@@ -3,15 +3,16 @@
 
 #include "EnemySpawner.h"
 
-#include "EnemyAIController.h"
-#include "Characters/EnemyARPGCharacter.h"
+#include "DiabloLikeARPG/EnemyAIController.h"
+#include "DiabloLikeARPG/Characters/EnemyARPGCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 AEnemySpawner::AEnemySpawner()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	SpawnInterval = 5.0f;
+	bLoop = true;
+	SpawnDelay = 5.0f;
 	SpawnCount = 5;
 }
 
@@ -21,13 +22,21 @@ void AEnemySpawner::BeginPlay()
 
 	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(this, 0);
 
-	GetWorldTimerManager().SetTimer(SpawnTimerHandle,
-	                                this, &AEnemySpawner::SpawnEnemies, SpawnInterval, true);
+	if (bAutoStartSpawning)
+	{
+		HandleEnemiesSpawning();
+	}
 }
 
 void AEnemySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AEnemySpawner::HandleEnemiesSpawning()
+{
+	GetWorldTimerManager().SetTimer(SpawnTimerHandle,
+	        this, &AEnemySpawner::SpawnEnemies, SpawnDelay, bLoop);
 }
 
 void AEnemySpawner::SpawnEnemies()
@@ -47,15 +56,15 @@ void AEnemySpawner::SpawnEnemies()
 
 		const AEnemyARPGCharacter* EnemyCharacter = GetWorld()->SpawnActor<AEnemyARPGCharacter>(
 			SelectedEnemyClass, GetActorLocation(), GetActorRotation());
-		
+
 		if (EnemyCharacter == nullptr)
 		{
 			if (GEngine)
 				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
-												 "Can not spawn enemy. Enemy character is null!");
+				                                 "Can not spawn enemy. Enemy character is null!");
 			continue;
 		}
-		
+
 		if (AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(EnemyCharacter->Controller))
 		{
 			EnemyAIController->SetAutoChasePlayer(true);

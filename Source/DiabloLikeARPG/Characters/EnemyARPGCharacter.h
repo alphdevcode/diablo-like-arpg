@@ -44,6 +44,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Health")
 	UWidgetComponent* HealthBar;
 
+	UPROPERTY(EditDefaultsOnly)
+	FName EnemyName;
+
 public:
 	virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
 
@@ -53,4 +56,7 @@ public:
 	// IInteractableInterface
 	virtual void Interact(ACharacter* InteractorCharacter) override;
 	virtual AActor* GetInteractableActor() override;
+
+	UFUNCTION(BlueprintPure)
+	FName GetEnemyName() const;
 };

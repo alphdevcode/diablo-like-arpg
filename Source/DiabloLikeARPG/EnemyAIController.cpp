@@ -3,10 +3,9 @@
 
 #include "EnemyAIController.h"
 
-#include "AbilitiesSystem/AbilitiesComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Characters/DiabloLikeARPGCharacter.h"
-#include "GameFramework/GameModeBase.h"
+#include "Components/AbilitiesComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
@@ -106,7 +105,7 @@ float AEnemyAIController::GetIdealRange() const
 		}
 		return 150.f;
 	}
-	return ControlledCharacter->AbilitiesComponent->GetCurrentAbilityRange();
+	return ControlledCharacter->GetAbilitiesComponent()->GetCurrentAbilityRange();
 }
 
 void AEnemyAIController::SetAttackTarget(AActor* NewAttackTarget)

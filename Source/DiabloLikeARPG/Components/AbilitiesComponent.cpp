@@ -3,7 +3,7 @@
 
 #include "AbilitiesComponent.h"
 
-#include "AbilityAttack.h"
+#include "DiabloLikeARPG/Abilities/Ability.h"
 #include "DiabloLikeARPG/Characters/DiabloLikeARPGCharacter.h"
 #include "DiabloLikeARPG/Characters/EnemyARPGCharacter.h"
 #include "GameFramework/Character.h"

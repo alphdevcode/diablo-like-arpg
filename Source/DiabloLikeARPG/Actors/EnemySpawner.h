@@ -16,24 +16,34 @@ class DIABLOLIKEARPG_API AEnemySpawner : public AActor
 public:	
 	AEnemySpawner();
 
+	void HandleEnemiesSpawning();
+
 protected:
 	virtual void BeginPlay() override;
 
-public:	
-	virtual void Tick(float DeltaTime) override;
-
-private:
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 	TArray<TSubclassOf<AEnemyARPGCharacter>> EnemyClasses;
-
-	/** Spawn interval in seconds */
-	UPROPERTY(EditAnywhere, Category = "Spawning")
-	float SpawnInterval;
 
 	/** Number of enemies to spawn each interval */
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 	int32 SpawnCount;
 
+	/** Spawn interval in seconds */
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+	float SpawnDelay;
+	
+	/** Whether to loop spawning over a given time or not */
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+	bool bLoop;
+
+	/** Whether to loop spawning over a given time or not */
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+	bool bAutoStartSpawning;
+
+public:	
+	virtual void Tick(float DeltaTime) override;
+
+private:
 	UPROPERTY()
 	ACharacter* PlayerCharacter;
 	
