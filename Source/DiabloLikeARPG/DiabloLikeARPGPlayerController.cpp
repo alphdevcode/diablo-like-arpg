@@ -48,15 +48,16 @@ void ADiabloLikeARPGPlayerController::GameHasEnded(AActor* EndGameFocus, bool bI
 		{
 			Subsystem->RemoveMappingContext(DefaultMappingContext);
 		}
+
+		FTimerHandle RestartTimerHandle;
+		GetWorldTimerManager().SetTimer(RestartTimerHandle, this,
+										&ADiabloLikeARPGPlayerController::RestartLevel, 2.f, false);
+		
 		// if (UUserWidget* LoseScreenWidget = CreateWidget(this, LoseScreenWidgetClass))
 		// {
 		// 	LoseScreenWidget->AddToViewport();
 		// }
 	}
-
-	FTimerHandle RestartTimerHandle;
-	GetWorldTimerManager().SetTimer(RestartTimerHandle, this,
-									&ADiabloLikeARPGPlayerController::RestartLevel, 2.f, false);
 }
 
 void ADiabloLikeARPGPlayerController::Tick(float DeltaSeconds)
