@@ -3,6 +3,7 @@
 
 #include "EnemySpawner.h"
 
+#include "Components/CapsuleComponent.h"
 #include "DiabloLikeARPG/EnemyAIController.h"
 #include "DiabloLikeARPG/Characters/EnemyARPGCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -57,11 +58,16 @@ void AEnemySpawner::SpawnEnemies()
 		const AEnemyARPGCharacter* EnemyCharacter = GetWorld()->SpawnActor<AEnemyARPGCharacter>(
 			SelectedEnemyClass, GetActorLocation(), GetActorRotation());
 
+		// Manually address bug where spawned actors will get their CollisionResponse overridden.
+		// This is needed so they can get hit by attacks
+		EnemyCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic,
+			ECollisionResponse::ECR_Block);
+
 		if (EnemyCharacter == nullptr)
 		{
 			if (GEngine)
 				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
-				                                 "Can not spawn enemy. Enemy character is null!");
+				"Can not spawn enemy. Enemy character returned null!");
 			continue;
 		}
 
