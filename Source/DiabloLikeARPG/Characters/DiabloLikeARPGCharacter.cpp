@@ -92,32 +92,7 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 
 	if (IsDead())
 	{
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		
-		GetMesh()->SetSimulatePhysics(true);
-		// const FName PelvisBone = "pelvis";
-		// GetMesh()->SetAllBodiesBelowSimulatePhysics(PelvisBone, true, true);
-		// GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(PelvisBone,
-		//                                                1.f, false, true);
-
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
-			                                 TEXT("Dead"));
-
-		if(const ASoloARPGGameMode* GameMode = Cast<ASoloARPGGameMode>(GetWorld()->GetAuthGameMode()))
-		{
-			GameMode->GetOnPawnDied().Broadcast(this);
-		}
-
-		if (!bCanRespawn)
-		{
-			DetachFromControllerPendingDestroy();
-			UnPossessed();
-			
-			// Destroy the character after 2 seconds
-			GetWorldTimerManager().SetTimer(DestroyActorTimerHandle, this,
-											&ADiabloLikeARPGCharacter::DestroyCharacter, 2.f, false);
-		}
+		HandleCharacterDeath();
 	}
 
 	return DamageToApply;
@@ -158,6 +133,41 @@ void ADiabloLikeARPGCharacter::CheckForInteractions()
 			PlayerController->ContinuouslyMoveToLocation(
 				CurrentInteractable->GetInteractableActor()->GetActorLocation());
 		}
+	}
+}
+
+void ADiabloLikeARPGCharacter::HandleCharacterDeath()
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		
+	GetMesh()->SetSimulatePhysics(true);
+	// const FName PelvisBone = "pelvis";
+	// GetMesh()->SetAllBodiesBelowSimulatePhysics(PelvisBone, true, true);
+	// GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(PelvisBone,
+	//                                                1.f, false, true);
+
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
+										 TEXT("Dead"));
+
+	if(const ASoloARPGGameMode* GameMode = Cast<ASoloARPGGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		GameMode->GetOnPawnDied().Broadcast(this);
+	}
+
+	if(DeathSound != nullptr)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+	}
+
+	if (!bCanRespawn)
+	{
+		DetachFromControllerPendingDestroy();
+		UnPossessed();
+			
+		// Destroy the character after 2 seconds
+		GetWorldTimerManager().SetTimer(DestroyActorTimerHandle, this,
+										&ADiabloLikeARPGCharacter::DestroyCharacter, 2.f, false);
 	}
 }
 

@@ -26,7 +26,7 @@ public:
 
 
 protected:
-	void BeginPlay() override;
+	virtual void BeginPlay() override;
 	
 	IInteractorInterface* GetPlayerInteractor() const;
 

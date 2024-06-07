@@ -25,7 +25,7 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	virtual void Tick(float DeltaSeconds) override;
-	
+
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 	                         AController* EventInstigator, AActor* DamageCauser) override;
 
@@ -66,8 +66,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USoundBase* DestroySound;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class USoundBase* DeathSound;
+
 	void CheckForInteractions();
 
+	void HandleCharacterDeath();
 	void DestroyCharacter();
 
 public:
