@@ -232,7 +232,7 @@ void ADiabloLikeARPGCharacter::SetCurrentInteractable(IInteractableInterface* In
 float ADiabloLikeARPGCharacter::GetInteractionRange()
 {
 	// TODO: Implement a way to get the interaction range based on the interactable
-	return 200.f;
+	return 300.f;
 }
 
 void ADiabloLikeARPGCharacter::ActivatePrimaryAttackAbility() const
