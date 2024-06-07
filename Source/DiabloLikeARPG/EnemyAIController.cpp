@@ -5,6 +5,7 @@
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Characters/DiabloLikeARPGCharacter.h"
+#include "Characters/PlayerARPGCharacter.h"
 #include "Components/AbilitiesComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -37,11 +38,9 @@ void AEnemyAIController::BeginPlay()
 
 void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-	const ADiabloLikeARPGCharacter* PerceivedCharacter = Cast<ADiabloLikeARPGCharacter>(Actor);
-	const APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	const APlayerARPGCharacter* PerceivedPlayerCharacter = Cast<APlayerARPGCharacter>(Actor);
 
-	if (PerceivedCharacter && PerceivedCharacter->GetController() == PlayerController && Stimulus.
-		WasSuccessfullySensed())
+	if (PerceivedPlayerCharacter && Stimulus.WasSuccessfullySensed())
 	{
 		const TSubclassOf<UAISense> SenseClass =
 			UAIPerceptionSystem::GetSenseClassForStimulus(this, Stimulus);

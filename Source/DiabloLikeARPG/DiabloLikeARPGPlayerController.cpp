@@ -51,7 +51,7 @@ void ADiabloLikeARPGPlayerController::GameHasEnded(AActor* EndGameFocus, bool bI
 
 		FTimerHandle RestartTimerHandle;
 		GetWorldTimerManager().SetTimer(RestartTimerHandle, this,
-										&ADiabloLikeARPGPlayerController::RestartLevel, 2.f, false);
+										&ADiabloLikeARPGPlayerController::RestartLevel, 4.f, false);
 		
 		// if (UUserWidget* LoseScreenWidget = CreateWidget(this, LoseScreenWidgetClass))
 		// {
