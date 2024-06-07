@@ -4,6 +4,7 @@
 
 #include "Components/WidgetComponent.h"
 #include "DiabloLikeARPG/Components/AbilitiesComponent.h"
+#include "DiabloLikeARPG/GameManagement/DiabloLikeARPGGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AISense_Damage.h"
 
@@ -71,7 +72,14 @@ void AEnemyARPGCharacter::NotifyActorBeginCursorOver()
 {
 	Super::NotifyActorBeginCursorOver();
 	GetMesh()->SetOverlayMaterial(OverlayMaterial);
-	HealthBar->SetVisibility(true);
+	// HealthBar->SetVisibility(true);
+
+	
+	if(const ADiabloLikeARPGGameState* GameState = Cast<ADiabloLikeARPGGameState>
+			(UGameplayStatics::GetGameState(this)))
+	{
+		GameState->OnBeginEnemyHover.Broadcast(this);
+	}
 
 	if (IInteractorInterface* PlayerInteractor = GetPlayerInteractor())
 	{
@@ -83,7 +91,13 @@ void AEnemyARPGCharacter::NotifyActorEndCursorOver()
 {
 	Super::NotifyActorEndCursorOver();
 	GetMesh()->SetOverlayMaterial(nullptr);
-	HealthBar->SetVisibility(false);
+	// HealthBar->SetVisibility(false);
+
+	if(const ADiabloLikeARPGGameState* GameState = Cast<ADiabloLikeARPGGameState>
+			(UGameplayStatics::GetGameState(this)))
+	{
+		GameState->OnEndEnemyHover.Broadcast(this);
+	}
 }
 
 void AEnemyARPGCharacter::Interact(ACharacter* InteractorCharacter)

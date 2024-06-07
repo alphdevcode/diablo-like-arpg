@@ -9,6 +9,8 @@
 
 class UAIPerceptionComponent;
 class UWidgetComponent;
+class AEnemyARPGCharacter;
+
 /**
  * 
  */

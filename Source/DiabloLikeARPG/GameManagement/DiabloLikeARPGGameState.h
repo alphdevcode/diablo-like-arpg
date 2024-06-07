@@ -9,6 +9,10 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerEntersBossRadius, AActor*, PlayerActor, AActor*, BossEnemyActor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerExitsBossRadius, AActor*, PlayerActor, AActor*, BossEnemyActor);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBeginEnemyHover, AEnemyARPGCharacter*, Enemy);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEndEnemyHover, AEnemyARPGCharacter*, Enemy);
+
+
 /**
  * 
  */
@@ -23,4 +27,10 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="Boss")
 	FOnPlayerExitsBossRadius OnPlayerExitsBossRadius;
+
+	UPROPERTY(BlueprintAssignable, Category="Enemy")
+	FOnBeginEnemyHover OnBeginEnemyHover;
+	
+	UPROPERTY(BlueprintAssignable, Category="Enemy")
+	FOnEndEnemyHover OnEndEnemyHover;
 };
