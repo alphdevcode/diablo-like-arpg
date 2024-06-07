@@ -55,6 +55,10 @@ void AEnemySpawner::SpawnEnemies()
 			continue;
 		}
 
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride =
+			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
 		const AEnemyARPGCharacter* EnemyCharacter = GetWorld()->SpawnActor<AEnemyARPGCharacter>(
 			SelectedEnemyClass, GetActorLocation(), GetActorRotation());
 
