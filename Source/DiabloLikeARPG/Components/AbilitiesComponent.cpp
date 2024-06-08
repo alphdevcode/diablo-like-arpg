@@ -69,7 +69,7 @@ void UAbilitiesComponent::ActivatePrimaryAttackAbility()
 	if (ActivateClickAbility(0) == nullptr) return;
 
 	// Only assign the Target to the last interactable if we are a player
-	if(ADiabloLikeARPGCharacter* OwnerCharacter = Cast<APlayerARPGCharacter>(GetOwner()))
+	if (ADiabloLikeARPGCharacter* OwnerCharacter = Cast<APlayerARPGCharacter>(GetOwner()))
 	{
 		ClickAssignedAbilities[0]->Target = OwnerCharacter->GetTargetInteractableActor();
 	}
@@ -111,7 +111,7 @@ void UAbilitiesComponent::CleanAbilities()
 			Ability->Destroy();
 		}
 	}
-	
+
 	for (AAbility* Ability : AssignedAbilities)
 	{
 		if (Ability != nullptr)
@@ -128,15 +128,28 @@ const AAbility* UAbilitiesComponent::ActivateAbilityFromCollection(
 	{
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow,
-			                                 TEXT("No ability assigned to selected Ability spot"));
+			         TEXT("No ability assigned to selected Ability spot"));
 		return nullptr;
 	}
 
-	AbilitiesArray[AbilityIndex]->ActivateAbility(GetOwner()->GetActorLocation());
-	if (LastActivatedAbility != nullptr && LastActivatedAbility != AbilitiesArray[AbilityIndex])
+	if (LastActivatedAbility != nullptr)
 	{
-		LastActivatedAbility->ResetAbility();
+		// If the last activated ability is still active, we can not activate another ability
+		// We ignore this restriction for the primary attack ability
+		if(LastActivatedAbility->GetIsActive() && LastActivatedAbility != ClickAssignedAbilities[0])
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow,
+			FString::Printf(TEXT("Can not activate ability [%s]. Another ability [%s] is already active."),
+						*AbilitiesArray[AbilityIndex]->GetAbilityName().ToString(),
+						*LastActivatedAbility->GetAbilityName().ToString()));
+			return nullptr;
+		}
+		if (LastActivatedAbility != AbilitiesArray[AbilityIndex])
+		{
+			LastActivatedAbility->ResetAbility();
+		}
 	}
+	AbilitiesArray[AbilityIndex]->ActivateAbility(GetOwner()->GetActorLocation());
 	LastActivatedAbility = AbilitiesArray[AbilityIndex];
 	return AbilitiesArray[AbilityIndex];
 }

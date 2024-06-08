@@ -84,6 +84,11 @@ float AAbility::GetRange() const
 	return Range;
 }
 
+bool AAbility::GetIsActive() const
+{
+	return bIsActive; 
+}
+
 void AAbility::SpawnAbilityEffects()
 {
 	SpawnAbilityEffectsWithLocation(EffectsSpawnLocation);
@@ -103,6 +108,7 @@ void AAbility::SpawnAbilityEffectsWithLocation(const FVector& SpawnLocation)
 			AbilityEffect->FinishSpawning(SpawnTransform);
 		}
 	}
+	bIsActive = false;
 }
 
 void AAbility::ActivateAbility(const FVector& NewEffectsSpawnLocation)
@@ -115,6 +121,7 @@ void AAbility::ActivateAbility(const FVector& NewEffectsSpawnLocation)
 		return;
 	}
 
+	bIsActive = true;
 	BeforeActivateAbility();
 	RemainingCooldown = Cooldown;
 	OnAbilityActivated.Broadcast();

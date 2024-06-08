@@ -42,8 +42,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	float Range = 100.f;
 	
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
-	// bool bIsActive = false;
+	UPROPERTY(BlueprintReadWrite, Category = "Ability")
+	bool bIsActive = false;
 
 	UPROPERTY(EditAnywhere, Category = "Ability")
 	float Cooldown = 0.5f;
@@ -99,6 +99,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	float GetRange() const;
+
+	UFUNCTION(BlueprintPure)
+	bool GetIsActive() const;
 
 	// Note we can't overload a UFUNCTION
 	UFUNCTION(BlueprintCallable)
