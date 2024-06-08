@@ -6,6 +6,7 @@
 #include "DiabloLikeARPG/Abilities/Ability.h"
 #include "DiabloLikeARPG/Characters/DiabloLikeARPGCharacter.h"
 #include "DiabloLikeARPG/Characters/EnemyARPGCharacter.h"
+#include "DiabloLikeARPG/Characters/PlayerARPGCharacter.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -67,11 +68,8 @@ void UAbilitiesComponent::ActivatePrimaryAttackAbility()
 {
 	if (ActivateClickAbility(0) == nullptr) return;
 
-	ADiabloLikeARPGCharacter* OwnerCharacter = Cast<ADiabloLikeARPGCharacter>(GetOwner());
-
-	// Only assign the Target to the last interactable if we are the player
-	if (OwnerCharacter != nullptr
-		&& OwnerCharacter == UGameplayStatics::GetPlayerCharacter(this, 0))
+	// Only assign the Target to the last interactable if we are a player
+	if(ADiabloLikeARPGCharacter* OwnerCharacter = Cast<APlayerARPGCharacter>(GetOwner()))
 	{
 		ClickAssignedAbilities[0]->Target = OwnerCharacter->GetTargetInteractableActor();
 	}
@@ -102,6 +100,25 @@ const AAbility* UAbilitiesComponent::ActivateAbility(const int AbilityIndex)
 const AAbility* UAbilitiesComponent::ActivateClickAbility(const int AbilityIndex)
 {
 	return ActivateAbilityFromCollection(ClickAssignedAbilities, AbilityIndex);
+}
+
+void UAbilitiesComponent::CleanAbilities()
+{
+	for (AAbility* Ability : ClickAssignedAbilities)
+	{
+		if (Ability != nullptr)
+		{
+			Ability->Destroy();
+		}
+	}
+	
+	for (AAbility* Ability : AssignedAbilities)
+	{
+		if (Ability != nullptr)
+		{
+			Ability->Destroy();
+		}
+	}
 }
 
 const AAbility* UAbilitiesComponent::ActivateAbilityFromCollection(

@@ -138,6 +138,8 @@ void ADiabloLikeARPGCharacter::CheckForInteractions()
 
 void ADiabloLikeARPGCharacter::HandleCharacterDeath()
 {
+	AbilitiesComponent->CleanAbilities();
+	
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		
 	GetMesh()->SetSimulatePhysics(true);

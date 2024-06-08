@@ -54,4 +54,5 @@ public:
 
 	const AAbility* ActivateAbility(const int AbilityIndex);
 	const AAbility* ActivateClickAbility(const int AbilityIndex);
+	void CleanAbilities();
 };
