@@ -29,7 +29,7 @@ void ADiabloLikeARPGPlayerController::GameHasEnded(AActor* EndGameFocus, bool bI
 {
 	Super::GameHasEnded(EndGameFocus, bIsWinner);
 
-	if (HudWidget)
+	if (HudWidget != nullptr)
 	{
 		HudWidget->RemoveFromParent();
 	}
@@ -51,7 +51,7 @@ void ADiabloLikeARPGPlayerController::GameHasEnded(AActor* EndGameFocus, bool bI
 
 		FTimerHandle RestartTimerHandle;
 		GetWorldTimerManager().SetTimer(RestartTimerHandle, this,
-										&ADiabloLikeARPGPlayerController::RestartLevel, 4.f, false);
+										&ADiabloLikeARPGPlayerController::RestartLevel, 5.f, false);
 		
 		// if (UUserWidget* LoseScreenWidget = CreateWidget(this, LoseScreenWidgetClass))
 		// {
