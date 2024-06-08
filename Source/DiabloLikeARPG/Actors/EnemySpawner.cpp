@@ -60,12 +60,7 @@ void AEnemySpawner::SpawnEnemies()
 			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 		const AEnemyARPGCharacter* EnemyCharacter = GetWorld()->SpawnActor<AEnemyARPGCharacter>(
-			SelectedEnemyClass, GetActorLocation(), GetActorRotation());
-
-		// Manually address bug where spawned actors will get their CollisionResponse overridden.
-		// This is needed so they can get hit by attacks
-		EnemyCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic,
-			ECollisionResponse::ECR_Block);
+			SelectedEnemyClass, GetActorLocation(), GetActorRotation(), SpawnParameters);
 
 		if (EnemyCharacter == nullptr)
 		{
@@ -74,6 +69,11 @@ void AEnemySpawner::SpawnEnemies()
 				"Can not spawn enemy. Enemy character returned null!");
 			continue;
 		}
+
+		// Manually address bug where spawned actors will get their CollisionResponse overridden.
+		// This is needed so they can get hit by attacks
+		EnemyCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic,
+			ECollisionResponse::ECR_Block);
 
 		if (AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(EnemyCharacter->Controller))
 		{
