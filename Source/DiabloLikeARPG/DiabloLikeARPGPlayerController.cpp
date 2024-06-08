@@ -29,11 +29,6 @@ void ADiabloLikeARPGPlayerController::GameHasEnded(AActor* EndGameFocus, bool bI
 {
 	Super::GameHasEnded(EndGameFocus, bIsWinner);
 
-	if (HudWidget != nullptr)
-	{
-		HudWidget->RemoveFromParent();
-	}
-
 	if (bIsWinner)
 	{
 		// if (UUserWidget* WinScreenWidget = CreateWidget(this, WinScreenWidgetClass))
@@ -43,6 +38,11 @@ void ADiabloLikeARPGPlayerController::GameHasEnded(AActor* EndGameFocus, bool bI
 	}
 	else
 	{
+		if (HudWidget != nullptr)
+		{
+			HudWidget->RemoveFromParent();
+		}
+		
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
 		GetLocalPlayer()))
 		{

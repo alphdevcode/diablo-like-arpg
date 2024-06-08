@@ -4,6 +4,7 @@
 
 #include "DiabloLikeARPG/Utils/ActorFunctionLibrary.h"
 #include "DiabloLikeARPG/DiabloLikeARPGAnimInstance.h"
+#include "DiabloLikeARPG/Characters/DiabloLikeARPGCharacter.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -81,8 +82,11 @@ void AAbilityAttack::ResetAbility()
 
 void AAbilityAttack::HandleAbilityEffectsSpawning()
 {
-	if (const ACharacter* TargetCharacter = Cast<ACharacter>(Target))
+	if (const ADiabloLikeARPGCharacter* TargetCharacter = Cast<ADiabloLikeARPGCharacter>(Target))
 	{
+		// If the target is already dead, don't spawn the effects
+		if(TargetCharacter->IsDead()) return;
+		
 		if (ImpactFX != nullptr)
 		{
 			// play particle system
