@@ -6,6 +6,7 @@
 #include "Components/AbilitiesComponent.h"
 #include "Actors/GameStates/DiabloLikeARPGGameState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Libraries/Logger.h"
 #include "Perception/AISense_Damage.h"
 
 AEnemyARPGCharacter::AEnemyARPGCharacter()
@@ -18,13 +19,13 @@ AEnemyARPGCharacter::AEnemyARPGCharacter()
 }
 
 float AEnemyARPGCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	AActor* DamageCauser)
+                                      AActor* DamageCauser)
 {
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
 	// Broadcast a report damage event for the AI Perception System
 	UAISense_Damage::ReportDamageEvent(this, this, DamageCauser, Damage,
-		GetActorLocation(), GetActorLocation());
+	                                   GetActorLocation(), GetActorLocation());
 
 	return Damage;
 }
@@ -35,7 +36,7 @@ void AEnemyARPGCharacter::BeginPlay()
 
 	HealthBar->SetVisibility(false);
 }
- 
+
 IInteractorInterface* AEnemyARPGCharacter::GetPlayerInteractor() const
 {
 	return Cast<IInteractorInterface>
@@ -56,10 +57,7 @@ void AEnemyARPGCharacter::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	Super::NotifyActorOnClicked(ButtonPressed);
 
-	// if(GEngine)
-	// {
-	// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("ENEMY CLICKED"));
-	// }
+	// LOG_INFO(TEXT("Enemy Clicked"));
 
 	if (IInteractorInterface* PlayerInteractor = GetPlayerInteractor())
 	{
@@ -74,9 +72,8 @@ void AEnemyARPGCharacter::NotifyActorBeginCursorOver()
 	GetMesh()->SetOverlayMaterial(OverlayMaterial);
 	// HealthBar->SetVisibility(true);
 
-	
-	if(const ADiabloLikeARPGGameState* GameState = Cast<ADiabloLikeARPGGameState>
-			(UGameplayStatics::GetGameState(this)))
+	if (const ADiabloLikeARPGGameState* GameState = Cast<ADiabloLikeARPGGameState>
+		(UGameplayStatics::GetGameState(this)))
 	{
 		GameState->OnBeginEnemyHover.Broadcast(this);
 	}
@@ -93,8 +90,8 @@ void AEnemyARPGCharacter::NotifyActorEndCursorOver()
 	GetMesh()->SetOverlayMaterial(nullptr);
 	// HealthBar->SetVisibility(false);
 
-	if(const ADiabloLikeARPGGameState* GameState = Cast<ADiabloLikeARPGGameState>
-			(UGameplayStatics::GetGameState(this)))
+	if (const ADiabloLikeARPGGameState* GameState = Cast<ADiabloLikeARPGGameState>
+		(UGameplayStatics::GetGameState(this)))
 	{
 		GameState->OnEndEnemyHover.Broadcast(this);
 	}

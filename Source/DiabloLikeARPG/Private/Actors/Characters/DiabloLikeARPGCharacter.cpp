@@ -13,6 +13,7 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
+#include "Libraries/Logger.h"
 
 ADiabloLikeARPGCharacter::ADiabloLikeARPGCharacter()
 {
@@ -29,7 +30,7 @@ ADiabloLikeARPGCharacter::ADiabloLikeARPGCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
-	
+
 	// Attach Stat Component
 	StatsComponent = CreateDefaultSubobject<UStatsComponent>(TEXT("StatsComponent"));
 
@@ -72,7 +73,7 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
                                            AActor* DamageCauser)
 {
 	const float DamageToApply = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-	
+
 	// DamageToApply = FMath::Min(Health, DamageToApply);
 
 	// If we have a valid HitAnimMontage, and we're currently not playing any other animation montage
@@ -85,10 +86,7 @@ float ADiabloLikeARPGCharacter::TakeDamage(float Damage, FDamageEvent const& Dam
 	}
 	StatsComponent->ReduceHealth(DamageToApply);
 
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
-		                                 FString::Printf(
-			                                 TEXT("Taking Damage. Health: %f"), StatsComponent->GetHealth()));
+	LOG_ERROR(TEXT("Taking Damage. Health: %f"), StatsComponent->GetHealth());
 
 	if (IsDead())
 	{
@@ -115,9 +113,7 @@ void ADiabloLikeARPGCharacter::CheckForInteractions()
 
 	const float DistanceToTarget = GetDistanceTo(CurrentInteractable->GetInteractableActor());
 
-	// if (GEngine)
-	// 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green,
-	// 	TEXT("Distance: %f"), DistanceToTarget);
+	// LOG_INFO(TEXT("Distance: %f"), DistanceToTarget);
 
 	if (DistanceToTarget <= GetInteractionRange() && GetController())
 	{
@@ -139,25 +135,23 @@ void ADiabloLikeARPGCharacter::CheckForInteractions()
 void ADiabloLikeARPGCharacter::HandleCharacterDeath()
 {
 	AbilitiesComponent->CleanAbilities();
-	
+
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		
+
 	GetMesh()->SetSimulatePhysics(true);
 	// const FName PelvisBone = "pelvis";
 	// GetMesh()->SetAllBodiesBelowSimulatePhysics(PelvisBone, true, true);
 	// GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(PelvisBone,
 	//                                                1.f, false, true);
 
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
-										 TEXT("Dead"));
+	LOG_INFO(TEXT("%s has died!"), *GetName());
 
-	if(const ASoloARPGGameMode* GameMode = Cast<ASoloARPGGameMode>(GetWorld()->GetAuthGameMode()))
+	if (const ASoloARPGGameMode* GameMode = Cast<ASoloARPGGameMode>(GetWorld()->GetAuthGameMode()))
 	{
 		GameMode->GetOnPawnDied().Broadcast(this);
 	}
 
-	if(DeathSound != nullptr)
+	if (DeathSound != nullptr)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
 	}
@@ -166,10 +160,10 @@ void ADiabloLikeARPGCharacter::HandleCharacterDeath()
 	{
 		DetachFromControllerPendingDestroy();
 		UnPossessed();
-			
+
 		// Destroy the character after 2 seconds
 		GetWorldTimerManager().SetTimer(DestroyActorTimerHandle, this,
-										&ADiabloLikeARPGCharacter::DestroyCharacter, 2.f, false);
+		                                &ADiabloLikeARPGCharacter::DestroyCharacter, 2.f, false);
 	}
 }
 
@@ -201,28 +195,15 @@ void ADiabloLikeARPGCharacter::SetTargetInteractable(IInteractableInterface* Int
 		if (TargetInteractable != Interactable)
 		{
 			TargetInteractable = Interactable;
-			if (GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue,
-				                                 FString::Printf(TEXT("Updating Target Interactable from %s to %s"),
-				                                                 (TargetInteractable != nullptr
-					                                                  ? *TargetInteractable->GetInteractableActor()->
-					                                                  GetName()
-					                                                  : TEXT("null")),
-				                                                 (Interactable != nullptr
-					                                                  ? *Interactable->GetInteractableActor()->
-					                                                  GetName()
-					                                                  : TEXT("null"))));
-			}
+
+			LOG_INFO(TEXT("Updating Target Interactable from %s to %s"),
+			         TargetInteractable != nullptr ? *TargetInteractable->GetInteractableActor()->GetName() : TEXT("null"),
+			         Interactable != nullptr ? *Interactable->GetInteractableActor()->GetName() : TEXT("null"));
 		}
 	}
 	else
 	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
-			                                 TEXT("Can not set InteractableTarget. Interactable is null"));
-		}
+		LOG_ERROR(TEXT("Can not set InteractableTarget. Interactable is null"));
 	}
 }
 

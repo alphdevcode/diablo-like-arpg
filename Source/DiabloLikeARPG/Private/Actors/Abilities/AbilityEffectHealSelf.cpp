@@ -6,6 +6,7 @@
 #include "Actors/Abilities/Ability.h"
 #include "Components/StatsComponent.h"
 #include "GameFramework/Character.h"
+#include "Libraries/Logger.h"
 
 
 void AAbilityEffectHealSelf::OnActivate()
@@ -18,9 +19,7 @@ void AAbilityEffectHealSelf::OnActivate()
 	}
 	else
 	{
-		if(GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-				TEXT("Can't find StatsComponent on Ability's Caster!"));
+		LOG_ERROR(TEXT("Can't find StatsComponent on Ability's Caster!"));
 	}
 
 	FTimerHandle DestroyTimer;

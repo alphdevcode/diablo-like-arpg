@@ -7,6 +7,7 @@
 #include "AI/EnemyAIController.h"
 #include "Actors/Characters/EnemyARPGCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Libraries/Logger.h"
 
 AEnemySpawner::AEnemySpawner()
 {
@@ -49,9 +50,7 @@ void AEnemySpawner::SpawnEnemies()
 
 		if (SelectedEnemyClass == nullptr)
 		{
-			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
-				                                 "Can not spawn enemy. Enemy class is null!");
+			LOG_ERROR(TEXT("Can not spawn enemy. Enemy class is null!"));
 			continue;
 		}
 
@@ -64,9 +63,7 @@ void AEnemySpawner::SpawnEnemies()
 
 		if (EnemyCharacter == nullptr)
 		{
-			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
-				"Can not spawn enemy. Enemy character returned null!");
+			LOG_ERROR(TEXT("Can not spawn enemy. Enemy character returned null!"));
 			continue;
 		}
 

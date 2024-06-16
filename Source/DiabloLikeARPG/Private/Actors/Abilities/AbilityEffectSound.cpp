@@ -6,6 +6,7 @@
 #include "Actors/Abilities/Ability.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "Libraries/Logger.h"
 
 void AAbilityEffectSound::BeginPlay()
 {
@@ -13,9 +14,7 @@ void AAbilityEffectSound::BeginPlay()
 
 	if (AbilitySound == nullptr)
 	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-											 TEXT("Can't activate AbilityEffectSound, AbilitySound is not valid!"));
+		LOG_ERROR(TEXT("Can't activate AbilityEffectSound, AbilitySound is not valid!"));
 		return;
 	}
 
@@ -23,9 +22,7 @@ void AAbilityEffectSound::BeginPlay()
 	{
 		if(ParentAbility->Caster == nullptr)
 		{
-			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-												 TEXT("Can't activate attached AbilityEffectSound, Caster is not valid!"));
+			LOG_ERROR(TEXT("Can't activate attached AbilityEffectSound, Caster is not valid!"));
 			return;
 		}
 		UGameplayStatics::SpawnSoundAttached(AbilitySound, ParentAbility->Caster->GetMesh(),

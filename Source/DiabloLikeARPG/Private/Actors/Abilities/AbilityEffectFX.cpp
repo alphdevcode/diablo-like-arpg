@@ -6,6 +6,7 @@
 #include "Actors/Abilities/Ability.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "Libraries/Logger.h"
 
 void AAbilityEffectFX::BeginPlay()
 {
@@ -13,9 +14,7 @@ void AAbilityEffectFX::BeginPlay()
 
 	if (AbilityFX == nullptr)
 	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-			                                 TEXT("Can't activate AbilityEffectFX, AbilityFX is not valid!"));
+		LOG_ERROR(TEXT("Can't activate AbilityEffectFX, AbilityFX is not valid!"));
 		return;
 	}
 
@@ -23,9 +22,7 @@ void AAbilityEffectFX::BeginPlay()
 	{
 		if(ParentAbility->Caster == nullptr)
 		{
-			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-				                                 TEXT("Can't activate attached AbilityEffectFX, Caster is not valid!"));
+			LOG_ERROR(TEXT("Can't activate attached AbilityEffectFX, Caster is not valid!"));
 			return;
 		}
 		UGameplayStatics::SpawnEmitterAttached(AbilityFX, ParentAbility->Caster->GetMesh(),

@@ -7,6 +7,7 @@
 #include "Components/StatsComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "Libraries/Logger.h"
 
 AAbility::AAbility()
 {
@@ -68,9 +69,7 @@ bool AAbility::CanActivateAbility() const
 		return StatsComponent->GetMana() >= ManaCost;
 	}
 
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
-		                                 TEXT("Can not find StatsComponent when trying to activate ability."));
+	LOG_WARNING(TEXT("Can not find StatsComponent when trying to activate ability."));
 	return false;
 }
 
@@ -115,9 +114,7 @@ void AAbility::ActivateAbility(const FVector& NewEffectsSpawnLocation)
 {
 	if (!CanActivateAbility())
 	{
-		// if (GEngine)
-		// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
-		// 	                                 TEXT("Can not activate ability"));
+		// LOG_WARNING(TEXT("Can not activate ability"));
 		return;
 	}
 

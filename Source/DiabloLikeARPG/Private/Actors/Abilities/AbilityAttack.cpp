@@ -7,6 +7,7 @@
 #include "Actors/Characters/DiabloLikeARPGCharacter.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "Libraries/Logger.h"
 
 
 void AAbilityAttack::Initialize()
@@ -23,7 +24,7 @@ void AAbilityAttack::Initialize()
 void AAbilityAttack::AbilityActivated()
 {
 	Super::AbilityActivated();
-	
+
 	bShouldLookAtTarget = true;
 	if (bIsAttacking)
 	{
@@ -46,7 +47,7 @@ void AAbilityAttack::HandleAttackCombo()
 			CasterAnimInstance->OnAnimNotifyAttackPeak.AddDynamic(this, &AAbilityAttack::HandleAbilityEffectsSpawning);
 		}
 
-		if(CastSound != nullptr)
+		if (CastSound != nullptr)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, CastSound, Caster->GetActorLocation());
 		}
@@ -54,9 +55,7 @@ void AAbilityAttack::HandleAttackCombo()
 	else
 	{
 		ResetAbility();
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-			                                 TEXT("AttackAnimMontage is not valid!"));
+		LOG_ERROR(TEXT("AttackAnimMontage is not valid!"));
 		return;
 	}
 
@@ -85,24 +84,22 @@ void AAbilityAttack::HandleAbilityEffectsSpawning()
 	if (const ADiabloLikeARPGCharacter* TargetCharacter = Cast<ADiabloLikeARPGCharacter>(Target))
 	{
 		// If the target is already dead, don't spawn the effects
-		if(TargetCharacter->IsDead()) return;
-		
+		if (TargetCharacter->IsDead()) return;
+
 		if (ImpactFX != nullptr)
 		{
 			// play particle system
 			UGameplayStatics::SpawnEmitterAtLocation(this,
-			                ImpactFX, TargetCharacter->GetMesh()->GetSocketLocation("Impact"),
-			                FRotator::ZeroRotator, FVector(1), true, EPSCPoolMethod::AutoRelease);
+			                                         ImpactFX, TargetCharacter->GetMesh()->GetSocketLocation("Impact"),
+			                                         FRotator::ZeroRotator, FVector(1), true,
+			                                         EPSCPoolMethod::AutoRelease);
 		}
 		SpawnAbilityEffects();
 		CasterAnimInstance->OnAnimNotifyAttackPeak.RemoveDynamic(this, &AAbilityAttack::HandleAbilityEffectsSpawning);
 	}
 	else
 	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.f,
-			                                 FColor::Red,
-			                                 TEXT("Trying to spawn abilities effect with a nullptr Target"));
+		LOG_ERROR(TEXT("Trying to spawn abilities effect with a nullptr Target"));
 	}
 	bShouldLookAtTarget = false;
 }

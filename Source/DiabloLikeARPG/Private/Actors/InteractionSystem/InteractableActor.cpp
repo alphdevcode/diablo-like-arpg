@@ -6,6 +6,7 @@
 #include "DiabloLikeARPG/Public/Actors/InteractionSystem/InteractorInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
+#include "Libraries/Logger.h"
 
 AInteractableActor::AInteractableActor()
 {
@@ -37,9 +38,7 @@ void AInteractableActor::NotifyActorOnClicked(FKey ButtonPressed)
 
 void AInteractableActor::Interact(ACharacter* InteractorCharacter)
 {
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green,
-		                                 FString::Printf(TEXT("Interacting with %s"), *GetName()));
+	LOG_INFO(TEXT("Interacting with %s"), *GetName());
 }
 
 AActor* AInteractableActor::GetInteractableActor()

@@ -4,14 +4,13 @@
 #include "Libraries/ActorFunctionLibrary.h"
 
 #include "Kismet/KismetMathLibrary.h"
+#include "Libraries/Logger.h"
 
 FRotator UActorFunctionLibrary::LookAtDestination(AActor* Actor, const FVector& Destination, const float InterpSpeed)
 {
 	if (Actor == nullptr)
 	{
-		if(GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-			TEXT("LookAtDestination: Character is nullptr"));
+		LOG_ERROR(TEXT("LookAtDestination: Character is nullptr"));
 		return FRotator::ZeroRotator;
 	}
 

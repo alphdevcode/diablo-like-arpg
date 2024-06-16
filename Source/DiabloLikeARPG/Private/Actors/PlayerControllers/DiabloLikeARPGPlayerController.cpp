@@ -16,6 +16,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Libraries/ActorFunctionLibrary.h"
+#include "Libraries/Logger.h"
 
 ADiabloLikeARPGPlayerController::ADiabloLikeARPGPlayerController()
 {
@@ -42,17 +43,18 @@ void ADiabloLikeARPGPlayerController::GameHasEnded(AActor* EndGameFocus, bool bI
 		{
 			HudWidget->RemoveFromParent();
 		}
-		
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
-		GetLocalPlayer()))
+
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
+			UEnhancedInputLocalPlayerSubsystem>(
+			GetLocalPlayer()))
 		{
 			Subsystem->RemoveMappingContext(DefaultMappingContext);
 		}
 
 		FTimerHandle RestartTimerHandle;
 		GetWorldTimerManager().SetTimer(RestartTimerHandle, this,
-										&ADiabloLikeARPGPlayerController::RestartLevel, 5.f, false);
-		
+		                                &ADiabloLikeARPGPlayerController::RestartLevel, 5.f, false);
+
 		// if (UUserWidget* LoseScreenWidget = CreateWidget(this, LoseScreenWidgetClass))
 		// {
 		// 	LoseScreenWidget->AddToViewport();
@@ -71,8 +73,8 @@ void ADiabloLikeARPGPlayerController::RespawnPlayer()
 {
 	TArray<AActor*> SpawnPointArray;
 	UGameplayStatics::GetAllActorsOfClass(this, ASpawnPoint::StaticClass(), SpawnPointArray);
-	
-	if(SpawnPointArray.IsValidIndex(0))
+
+	if (SpawnPointArray.IsValidIndex(0))
 	{
 		// ControlledCharacter->SetActorLocationAndRotation(SpawnPointArray[0]->GetActorLocation(),
 		// 	SpawnPointArray[0]->GetActorRotation(), false, nullptr,
@@ -145,7 +147,7 @@ void ADiabloLikeARPGPlayerController::SetupInputComponent()
 		                                   &ADiabloLikeARPGPlayerController::OnRootedReleased);
 
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Started, this,
-										   &ADiabloLikeARPGPlayerController::OnMoveStarted);
+		                                   &ADiabloLikeARPGPlayerController::OnMoveStarted);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this,
 		                                   &ADiabloLikeARPGPlayerController::OnMoveTriggered);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this,
@@ -154,12 +156,12 @@ void ADiabloLikeARPGPlayerController::SetupInputComponent()
 		                                   &ADiabloLikeARPGPlayerController::OnMoveReleased);
 
 		EnhancedInputComponent->BindAction(SetRotateCameraAction, ETriggerEvent::Started, this,
-											   &ADiabloLikeARPGPlayerController::OnSetRotateCameraStarted);
+		                                   &ADiabloLikeARPGPlayerController::OnSetRotateCameraStarted);
 		EnhancedInputComponent->BindAction(SetRotateCameraAction, ETriggerEvent::Completed, this,
-											   &ADiabloLikeARPGPlayerController::OnSetRotateCameraReleased);
+		                                   &ADiabloLikeARPGPlayerController::OnSetRotateCameraReleased);
 		EnhancedInputComponent->BindAction(SetRotateCameraAction, ETriggerEvent::Canceled, this,
-											   &ADiabloLikeARPGPlayerController::OnSetRotateCameraReleased);
-		
+		                                   &ADiabloLikeARPGPlayerController::OnSetRotateCameraReleased);
+
 		EnhancedInputComponent->BindAction(LookHorizontalAction, ETriggerEvent::Triggered, this,
 		                                   &ADiabloLikeARPGPlayerController::OnLookHorizontalTriggered);
 
@@ -170,23 +172,22 @@ void ADiabloLikeARPGPlayerController::SetupInputComponent()
 
 void ADiabloLikeARPGPlayerController::SetupAbilitiesInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
-	
 	EnhancedInputComponent->BindAction(ActivateAbility1Action, ETriggerEvent::Started, this,
-										   &ADiabloLikeARPGPlayerController::OnAbilityActivated, 0);
+	                                   &ADiabloLikeARPGPlayerController::OnAbilityActivated, 0);
 	EnhancedInputComponent->BindAction(ActivateAbility2Action, ETriggerEvent::Started, this,
-										   &ADiabloLikeARPGPlayerController::OnAbilityActivated, 1);
+	                                   &ADiabloLikeARPGPlayerController::OnAbilityActivated, 1);
 	EnhancedInputComponent->BindAction(ActivateAbility3Action, ETriggerEvent::Started, this,
-										   &ADiabloLikeARPGPlayerController::OnAbilityActivated, 2);
+	                                   &ADiabloLikeARPGPlayerController::OnAbilityActivated, 2);
 	EnhancedInputComponent->BindAction(ActivateAbility4Action, ETriggerEvent::Started, this,
-										   &ADiabloLikeARPGPlayerController::OnAbilityActivated, 3);
+	                                   &ADiabloLikeARPGPlayerController::OnAbilityActivated, 3);
 
 	// We're currently handling Left Click input from the interactable interface,
 	// so it can trigger multiple actions based on the context. The action was left here,
 	// but it's not bound in the mapping context.
 	EnhancedInputComponent->BindAction(ActivateClickAbility1Action, ETriggerEvent::Started, this,
-										   &ADiabloLikeARPGPlayerController::OnClickAbilityActivated, 0);
+	                                   &ADiabloLikeARPGPlayerController::OnClickAbilityActivated, 0);
 	EnhancedInputComponent->BindAction(ActivateClickAbility2Action, ETriggerEvent::Started, this,
-										   &ADiabloLikeARPGPlayerController::OnClickAbilityActivated, 1);
+	                                   &ADiabloLikeARPGPlayerController::OnClickAbilityActivated, 1);
 }
 
 void ADiabloLikeARPGPlayerController::OnAbilityActivated(const int AbilityIndex)
@@ -206,7 +207,7 @@ void ADiabloLikeARPGPlayerController::OnRootedStarted()
 		ControlledCharacter->GetCharacterMovement()
 		                   ->bUseControllerDesiredRotation = false;
 		ControlledCharacter->GetCharacterMovement()
-						   ->bOrientRotationToMovement = false;
+		                   ->bOrientRotationToMovement = false;
 	}
 }
 
@@ -214,7 +215,7 @@ void ADiabloLikeARPGPlayerController::OnRootedTriggered()
 {
 	// UActorFunctionLibrary::LookAtDestination(ControlledCharacter, CachedDestination);
 	FHitResult HitResult;
-	if(GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, HitResult))
+	if (GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, HitResult))
 	{
 		RotatorToMouseCursor = UActorFunctionLibrary::LookAtDestination(ControlledCharacter, HitResult.Location);
 	}
@@ -225,9 +226,9 @@ void ADiabloLikeARPGPlayerController::OnRootedReleased()
 	if (ControlledCharacter != nullptr)
 	{
 		ControlledCharacter->GetCharacterMovement()
-						   ->bUseControllerDesiredRotation = true;
+		                   ->bUseControllerDesiredRotation = true;
 		ControlledCharacter->GetCharacterMovement()
-						   ->bOrientRotationToMovement = true;
+		                   ->bOrientRotationToMovement = true;
 	}
 }
 
@@ -239,19 +240,19 @@ void ADiabloLikeARPGPlayerController::OnMoveStarted()
 
 void ADiabloLikeARPGPlayerController::OnMoveTriggered(const FInputActionValue& ActionValue)
 {
-	if(!bIsManualMoving) return;
-	
+	if (!bIsManualMoving) return;
+
 	if (ControlledCharacter != nullptr && ActionValue.GetValueType() == EInputActionValueType::Axis2D)
 	{
 		const FVector RightDirection = UKismetMathLibrary::GetRightVector(
 			FRotator(0.f, GetControlRotation().Yaw, GetControlRotation().Roll));
 		ControlledCharacter->AddMovementInput(RightDirection,
-			ActionValue.Get<FInputActionValue::Axis2D>().X);
+		                                      ActionValue.Get<FInputActionValue::Axis2D>().X);
 
 		const FVector ForwardDirection = UKismetMathLibrary::GetForwardVector(
 			FRotator(0.f, GetControlRotation().Yaw, 0.f));
 		ControlledCharacter->AddMovementInput(ForwardDirection,
-			ActionValue.Get<FInputActionValue::Axis2D>().Y);
+		                                      ActionValue.Get<FInputActionValue::Axis2D>().Y);
 	}
 }
 
@@ -262,7 +263,7 @@ void ADiabloLikeARPGPlayerController::OnMoveReleased()
 
 void ADiabloLikeARPGPlayerController::OnLookHorizontalTriggered(const FInputActionValue& ActionValue)
 {
-	if(bCanRotateCamera && ActionValue.GetValueType() == EInputActionValueType::Axis1D)
+	if (bCanRotateCamera && ActionValue.GetValueType() == EInputActionValueType::Axis1D)
 	{
 		ControlledCharacter->AddControllerYawInput(ActionValue.Get<FInputActionValue::Axis1D>());
 	}
@@ -281,7 +282,7 @@ void ADiabloLikeARPGPlayerController::OnSetRotateCameraReleased()
 void ADiabloLikeARPGPlayerController::LookAtToMouseCursor()
 {
 	FHitResult HitResult;
-	if(GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, HitResult))
+	if (GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, HitResult))
 	{
 		UActorFunctionLibrary::LookAtDestination(ControlledCharacter, HitResult.Location);
 	}
@@ -309,18 +310,14 @@ void ADiabloLikeARPGPlayerController::OnClickTriggered()
 	// Check if it hit any damageable actor
 	bool bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, true, Hit);
 
-	// if(GEngine && bHitSuccessful)
-	//  		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange,
-	// 		"Hit Damageable");
+	// if(bHitSuccessful) LOG_INFO(TEXT("Hit Damageable"));
 
 	// If it didn't hit any damageable actor, check if it hit any surface
 	if (!bHitSuccessful)
 	{
 		bHitDamageableActor = false;
 		bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
-		// if(GEngine && bHitSuccessful)
-		// 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange,
-		//    "Hit Visibility");
+		// if (bHitSuccessful) LOG_INFO(TEXT("Hit Visibility"));
 	}
 
 	// If we hit a surface or a damageable actor, cache the location
@@ -346,7 +343,7 @@ void ADiabloLikeARPGPlayerController::OnClickTriggered()
 	}
 	else
 	{
-		if(!bIsManualMoving)
+		if (!bIsManualMoving)
 		{
 			MoveTo(CachedDestination);
 		}
@@ -363,16 +360,17 @@ void ADiabloLikeARPGPlayerController::OnClickReleased()
 	// If it was a short press
 	if (FollowTime <= ShortPressThreshold)
 	{
-		if(bIsManualMoving || bHitDamageableActor)
+		if (bIsManualMoving || bHitDamageableActor)
 		{
 			return;
 		}
 		// We move there and spawn some particles
 		ContinuouslyMoveToLocation(CachedDestination);
-		if(!bHitDamageableActor)
+		if (!bHitDamageableActor)
 		{
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator,
-														   FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+			                                               FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None,
+			                                               true);
 		}
 	}
 

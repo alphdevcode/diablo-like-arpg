@@ -3,6 +3,8 @@
 
 #include "Components/StatsComponent.h"
 
+#include "Libraries/Logger.h"
+
 // Sets default values for this component's properties
 UStatsComponent::UStatsComponent()
 {
@@ -133,9 +135,7 @@ void UStatsComponent::ConsumeMana(const float Amount)
 	}
 	else
 	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow,
-			                                 TEXT("Not enough mana to consume."));
+		LOG_INFO(TEXT("Not enough mana to consume."));
 	}
 }
 
@@ -145,9 +145,6 @@ void UStatsComponent::ReduceHealth(const float Amount)
 	if (Health <= 0.f)
 	{
 		Health = 0.f;
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.f,
-			                                 FColor::Red, TEXT("Character just died."));
 	}
 	if (OnHealthChanged.IsBound())
 	{

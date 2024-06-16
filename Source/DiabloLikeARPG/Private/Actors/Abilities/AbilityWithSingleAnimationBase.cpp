@@ -5,6 +5,7 @@
 
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "Libraries/Logger.h"
 
 void AAbilityWithSingleAnimationBase::AbilityActivated()
 {
@@ -16,9 +17,7 @@ void AAbilityWithSingleAnimationBase::AbilityActivated()
 	}
 	else
 	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-			                                 TEXT("AbilityAnimMontage is not valid!"));
+		LOG_ERROR(TEXT("AbilityAnimMontage is not valid!"));
 	}
 
 	if (CastEffect != nullptr)
@@ -44,8 +43,6 @@ void AAbilityWithSingleAnimationBase::AbilityActivated()
 	}
 	else
 	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow,
-			                                 TEXT("CastAbilityEffect is not valid!"));
+		LOG_WARNING(TEXT("CastAbilityEffect is not valid!"));
 	}
 }

@@ -8,6 +8,7 @@
 #include "Actors/Characters/PlayerARPGCharacter.h"
 #include "Components/AbilitiesComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Libraries/Logger.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Damage.h"
@@ -57,7 +58,7 @@ void AEnemyAIController::Initialize()
 
 	if (!ControlledCharacter)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Enemy AI Controller: Controlled character is null for %s"), *GetName());
+		LOG_ERROR(TEXT("Enemy AI Controller: Controlled character is null for %s"), *GetName());
 	}
 
 	if (AIBehavior != nullptr)
@@ -97,11 +98,7 @@ float AEnemyAIController::GetIdealRange() const
 {
 	if (ControlledCharacter == nullptr)
 	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
-			"Can not get ideal range. Controlled character is null! Returning default value.");
-		}
+		LOG_ERROR(TEXT("Can not get ideal range. Controlled character is null! Returning default value."));
 		return 150.f;
 	}
 	return ControlledCharacter->GetAbilitiesComponent()->GetCurrentAbilityRange();

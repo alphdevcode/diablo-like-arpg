@@ -9,6 +9,7 @@
 #include "Actors/Characters/PlayerARPGCharacter.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "Libraries/Logger.h"
 
 UAbilitiesComponent::UAbilitiesComponent()
 {
@@ -51,9 +52,7 @@ void UAbilitiesComponent::AddAbility(const TSubclassOf<AAbility>& AbilityClass, 
 			Ability->Target = UGameplayStatics::GetPlayerPawn(this, 0);
 		}
 
-		// if(GEngine) 
-		// 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow,
-		// 									 TEXT("Owner of ability is: " + GetOwner()->GetName()));
+		 // LOG_WARNING(TEXT("Owner of ability is: %s"), *GetOwner()->GetName());
 
 		Ability->FinishSpawning(FTransform::Identity);
 		AbilitiesArray.Add(Ability);
@@ -126,9 +125,7 @@ const AAbility* UAbilitiesComponent::ActivateAbilityFromCollection(
 {
 	if (!AbilitiesArray.IsValidIndex(AbilityIndex) || AbilitiesArray[AbilityIndex] == nullptr)
 	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow,
-			         TEXT("No ability assigned to selected Ability spot"));
+		LOG_WARNING(TEXT("No ability assigned to selected Ability spot"));
 		return nullptr;
 	}
 
@@ -138,10 +135,9 @@ const AAbility* UAbilitiesComponent::ActivateAbilityFromCollection(
 		// We ignore this restriction for the primary attack ability
 		if(LastActivatedAbility->GetIsActive() && LastActivatedAbility != ClickAssignedAbilities[0])
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow,
-			FString::Printf(TEXT("Can not activate ability [%s]. Another ability [%s] is already active."),
+			LOG_WARNING(TEXT("Can not activate ability [%s]. Another ability [%s] is already active."),
 						*AbilitiesArray[AbilityIndex]->GetAbilityName().ToString(),
-						*LastActivatedAbility->GetAbilityName().ToString()));
+						*LastActivatedAbility->GetAbilityName().ToString());
 			return nullptr;
 		}
 		if (LastActivatedAbility != AbilitiesArray[AbilityIndex])
