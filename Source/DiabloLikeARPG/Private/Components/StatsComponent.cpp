@@ -3,7 +3,7 @@
 
 #include "Components/StatsComponent.h"
 
-#include "Libraries/Logger.h"
+#include "Logger.h"
 
 // Sets default values for this component's properties
 UStatsComponent::UStatsComponent()

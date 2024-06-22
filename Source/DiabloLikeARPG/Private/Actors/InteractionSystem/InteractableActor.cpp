@@ -6,7 +6,7 @@
 #include "DiabloLikeARPG/Public/Actors/InteractionSystem/InteractorInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
-#include "Libraries/Logger.h"
+#include "Logger.h"
 
 AInteractableActor::AInteractableActor()
 {

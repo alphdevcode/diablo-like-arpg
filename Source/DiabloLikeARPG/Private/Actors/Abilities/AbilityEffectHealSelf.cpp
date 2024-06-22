@@ -6,7 +6,7 @@
 #include "Actors/Abilities/Ability.h"
 #include "Components/StatsComponent.h"
 #include "GameFramework/Character.h"
-#include "Libraries/Logger.h"
+#include "Logger.h"
 
 
 void AAbilityEffectHealSelf::OnActivate()

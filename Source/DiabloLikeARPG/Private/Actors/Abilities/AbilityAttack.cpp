@@ -7,7 +7,7 @@
 #include "Actors/Characters/DiabloLikeARPGCharacter.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
-#include "Libraries/Logger.h"
+#include "Logger.h"
 
 
 void AAbilityAttack::Initialize()

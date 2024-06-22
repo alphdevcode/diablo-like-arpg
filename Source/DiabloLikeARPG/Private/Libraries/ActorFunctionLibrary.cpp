@@ -4,7 +4,7 @@
 #include "Libraries/ActorFunctionLibrary.h"
 
 #include "Kismet/KismetMathLibrary.h"
-#include "Libraries/Logger.h"
+#include "Logger.h"
 
 FRotator UActorFunctionLibrary::LookAtDestination(AActor* Actor, const FVector& Destination, const float InterpSpeed)
 {

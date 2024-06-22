@@ -2,12 +2,12 @@
 
 #include "Actors/Abilities/Ability.h"
 
+#include "Logger.h"
 #include "Actors/Abilities/AbilityEffect.h"
 #include "Animation/DiabloLikeARPGAnimInstance.h"
 #include "Components/StatsComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
-#include "Libraries/Logger.h"
 
 AAbility::AAbility()
 {

@@ -7,7 +7,7 @@
 #include "AI/EnemyAIController.h"
 #include "Actors/Characters/EnemyARPGCharacter.h"
 #include "Kismet/GameplayStatics.h"
-#include "Libraries/Logger.h"
+#include "Logger.h"
 
 AEnemySpawner::AEnemySpawner()
 {

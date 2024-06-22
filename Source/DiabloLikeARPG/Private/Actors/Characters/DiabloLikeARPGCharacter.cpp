@@ -13,7 +13,7 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
-#include "Libraries/Logger.h"
+#include "Logger.h"
 
 ADiabloLikeARPGCharacter::ADiabloLikeARPGCharacter()
 {

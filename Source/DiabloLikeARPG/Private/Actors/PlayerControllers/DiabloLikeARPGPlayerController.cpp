@@ -16,7 +16,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Libraries/ActorFunctionLibrary.h"
-#include "Libraries/Logger.h"
+#include "Logger.h"
 
 ADiabloLikeARPGPlayerController::ADiabloLikeARPGPlayerController()
 {

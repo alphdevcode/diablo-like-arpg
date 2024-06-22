@@ -6,7 +6,7 @@
 #include "Components/AbilitiesComponent.h"
 #include "Actors/GameStates/DiabloLikeARPGGameState.h"
 #include "Kismet/GameplayStatics.h"
-#include "Libraries/Logger.h"
+#include "Logger.h"
 #include "Perception/AISense_Damage.h"
 
 AEnemyARPGCharacter::AEnemyARPGCharacter()
