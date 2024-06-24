@@ -23,8 +23,8 @@ class DIABLOLIKEARPG_API IInteractorInterface
 
 public:
 	/** Target Interactable would be the one that the player is planning to interact with e.g. hovering */
-	virtual void SetTargetInteractable(IInteractableInterface* Interactable);
+	virtual void SetTargetInteractable(IInteractableInterface* Interactable) = 0;
 	/** Current Interactable would be the one that the player is currently interacting with e.g. clicking */
-	virtual void SetCurrentInteractable(IInteractableInterface* Interactable);
-	virtual float GetInteractionRange();
+	virtual void SetCurrentInteractable(IInteractableInterface* Interactable) = 0;
+	virtual float GetInteractionRange() = 0;
 };
