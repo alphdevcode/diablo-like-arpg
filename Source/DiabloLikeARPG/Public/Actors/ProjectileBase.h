@@ -15,8 +15,8 @@ UCLASS()
 class DIABLOLIKEARPG_API AProjectileBase : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	AProjectileBase();
 
 protected:
@@ -25,19 +25,19 @@ protected:
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-		FVector NormalImpulse, const FHitResult& Hit);
-	
+	           FVector NormalImpulse, const FHitResult& Hit);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* BoxComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	class UArrowComponent* ArrowComponent;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* ProjectileMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
-	UProjectileMovementComponent* ProjectileMovementComponent;	
+	UProjectileMovementComponent* ProjectileMovementComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UParticleSystemComponent* ProjectileParticleSystemComponent;
@@ -48,36 +48,53 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Sound", meta = (AllowPrivateAccess = "true"))
 	USoundBase* ImpactSound;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings",
+		meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
 	float InitialSpeed = 1000.f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings",
+		meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
 	float MaxSpeed = 1000.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings",
+		meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
 	float GravityScale = 0.f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings",
+		meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
 	float Damage = 10.f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings",
+		meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
 	bool bIsHomingTarget = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true, EditCondition = "bIsHomingTarget == true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ProjectileSettings",
+		meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true, EditCondition = "bIsHomingTarget == true"))
 	float HomingAccelerationMagnitude = 2000.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targetting", meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Targetting",
+		meta = (AllowPrivateAccess = "true", ExposeOnSpawn=true))
 	AActor* Target;
-
 
 private:
 	void RotateToTarget();
 
-public:	
+	void IgnoreCollisionsWithCaster();
+
+public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
 	void SetDamage(float NewDamage);
+
+	UFUNCTION(BlueprintCallable)
+	void SetTarget(AActor* TargetActor);
+
+	UFUNCTION(BlueprintCallable)
+	void InitializeValues(float NewInitialSpeed = 1300.f,
+	                float NewMaxSpeed = 1500.f, float NewGravityScale = 0.f,
+	                bool bNewIsHomingTarget = false,
+	                float NewHomingAccelerationMagnitude = 2000.f);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnProjectileHit OnProjectileHit;

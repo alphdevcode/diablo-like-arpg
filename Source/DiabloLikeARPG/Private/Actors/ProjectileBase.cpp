@@ -5,6 +5,7 @@
 
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -50,6 +51,7 @@ void AProjectileBase::BeginPlay()
 	}
 
 	RotateToTarget();
+	IgnoreCollisionsWithCaster();
 }
 
 void AProjectileBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -68,6 +70,16 @@ void AProjectileBase::RotateToTarget()
 		ProjectileMovementComponent->Velocity = UKismetMathLibrary::GetDirectionUnitVector(
 			GetActorLocation(), Target->GetActorLocation()) * InitialSpeed;
 	}
+}
+
+void AProjectileBase::IgnoreCollisionsWithCaster()
+{
+	BoxComponent->IgnoreActorWhenMoving(GetOwner(), true);
+	if(UShapeComponent* ShapeComponent = GetOwner()->FindComponentByClass<UShapeComponent>();
+		ShapeComponent != nullptr)
+	{
+		ShapeComponent->IgnoreActorWhenMoving(this, true);
+	} 
 }
 
 void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -106,5 +118,22 @@ void AProjectileBase::Tick(float DeltaTime)
 void AProjectileBase::SetDamage(const float NewDamage)
 {
 	Damage = NewDamage;
+
 }
+
+void AProjectileBase::SetTarget(AActor* TargetActor)
+{
+	Target = TargetActor;
+}
+
+void AProjectileBase::InitializeValues(const float NewInitialSpeed, const float NewMaxSpeed, const float NewGravityScale,
+                                       const bool bNewIsHomingTarget, const float NewHomingAccelerationMagnitude)
+{
+	InitialSpeed = NewInitialSpeed;
+	MaxSpeed = NewMaxSpeed;
+	GravityScale = NewGravityScale;
+	bIsHomingTarget = bNewIsHomingTarget;
+	HomingAccelerationMagnitude = NewHomingAccelerationMagnitude;
+}
+
 
