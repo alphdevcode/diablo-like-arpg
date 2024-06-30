@@ -22,7 +22,7 @@ protected:
 
 	virtual void OnActivate();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effect", meta = (AllowPrivateAccess = "true"))
 	AAbility* ParentAbility;
 
 public:	
