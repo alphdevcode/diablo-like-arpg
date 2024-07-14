@@ -21,11 +21,11 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	virtual void Initialize();
+	virtual void Initialize(); // Can't use pure functions in UClass
 	UFUNCTION()
-	virtual void BeforeActivateAbility();
+	virtual void BeforeActivateAbility(); // Can't use pure functions in UClass
 	UFUNCTION()
-	virtual void AbilityActivated();
+	virtual void AbilityActivated(); // Can't use pure functions in UClass
 	
 	UPROPERTY(BlueprintReadWrite)
 	class UDiabloLikeARPGAnimInstance* CasterAnimInstance;
